@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS PlantTable (
+    id TEXT PRIMARY KEY  NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    growZoneNumber INTEGER NOT NULL,
+    wateringInterval INTEGER NOT NULL DEFAULT 7,
+    imageUrl TEXT NOT NULL
+);
+
+
+
+
+getPlants:
+SELECT * FROM PlantTable ORDER BY name;
+
+getPlantsWithGrowZoneNumber:
+SELECT * FROM PlantTable WHERE growZoneNumber = :growZoneNumber ORDER BY name;
+
+getPlant:
+SELECT * FROM PlantTable WHERE id = :plantId;
+
+insertPlant:
+INSERT INTO PlantTable(id,name, description, growZoneNumber,wateringInterval,imageUrl)
+VALUES(?, ?, ?,?,?,?);
+
+getPlantsCount:
+SELECT COUNT(*) FROM PlantTable;

@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS GardenPlantingTable (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    plant_id TEXT NOT NULL,
+    plant_date INTEGER NOT NULL,
+    last_watering_date INTEGER NOT NULL,
+    FOREIGN KEY (plant_id) REFERENCES PlantTable(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+getGardenPlantingsByPlantId:
+SELECT * FROM GardenPlantingTable WHERE plant_id = :plantId;
+
+getAllGardenPlantings:
+SELECT * FROM GardenPlantingTable;
+
+isPlanted:
+SELECT EXISTS(SELECT 1 FROM GardenPlantingTable WHERE plant_id = :plantId LIMIT 1);
+
+getPlantedGardens:
+SELECT * FROM PlantTable WHERE id IN (SELECT DISTINCT(plant_id) FROM GardenPlantingTable);
+
+insertGardenPlanting:
+INSERT INTO GardenPlantingTable(plant_id, plant_date, last_watering_date)
+VALUES(?, ?, ?);
+
+deleteGardenPlanting:
+DELETE FROM GardenPlantingTable WHERE plant_id = :plantId;

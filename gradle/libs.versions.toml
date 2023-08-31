@@ -1,0 +1,118 @@
+[versions]
+material = "1.8.0"
+accompanist = "0.28.0"
+gradle-plugin = "1.5.5"
+# arkivanov.parcelize conflict with plugin-kotlin above 1.8.21, so them both should not upgrade untile conflict resolved
+parcelize-gradle-plugin = "0.1.4"
+ktor = "2.3.3"
+napier = "2.6.1"
+kotlinx-serialization = "1.5.1"
+android-material = "1.8.21"
+androidx-appcompat = "1.6.1"
+androidx-constraintlayout = "2.1.4"
+kotlinx-coroutines = "1.7.3"
+desugar-jdk-libs = "2.0.3"
+plugin-android = "8.1.1"
+plugin-gver = "0.47.0"
+plugin-kotlin = "1.8.21"
+sqldelight-version  = "1.5.5"
+kotlinx-datetime="0.4.0"
+cash-paging="3.1.1-0.3.1"
+cash-paging-runtime="3.1.1-0.1.1"
+paging-compose-common="3.2.0-alpha05-0.2.3"
+paging-version="3.1.1"
+paging-compose = "1.0.0-alpha20"
+coroutine-worker="0.8.3"
+moko-resources="0.23.0"
+moko-graphics="0.9.0"
+napier-version="2.6.1"
+kmm-viewmodel-version="1.0.0-ALPHA-13"
+image-loader = "1.6.4"
+moko-mvvm-version="0.16.1"
+decompose = "2.1.0-compose-experimental-alpha-05"
+decompose-router = "0.3.0"
+kermit = "2.0.0-RC4"
+[libraries]
+material = { module = "com.google.android.material:material", version.ref = "material" }
+accompanist-themeadapter-material = { module = "com.google.accompanist:accompanist-themeadapter-material", version.ref = "accompanist" }
+
+gradle-plugin-1_5_5 = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "gradle-plugin" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+
+ktor-client-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+#android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+
+plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
+plugin-gver = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "plugin-gver" }
+plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
+plugin-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "plugin-kotlin" }
+
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
+
+sqldelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight-version" }
+sqldelight-android-driver = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight-version" }
+sqldelight-native-driver = { module = "com.squareup.sqldelight:native-driver", version.ref = "sqldelight-version" }
+sqldelight-plugin = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight-version" }
+sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqldelight-version" }
+
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+
+cash-paging-common = { group = "app.cash.paging",name = "paging-common", version.ref = "paging-compose-common" }
+cash-paging-runtime = { group = "app.cash.paging",name = "paging-runtime", version.ref = "cash-paging-runtime" }
+cash-paging-compose-common = { group = "app.cash.paging",name = "paging-compose-common", version.ref = "paging-compose-common" }
+cash-paging-runtime-composeui = { group = "app.cash.paging",name = "paging-runtime-composeui", version.ref = "paging-compose-common" }
+cash-paging-compose-common-android = { group = "app.cash.paging",name = "paging-compose-common-android", version.ref = "paging-compose-common" }
+cash-paging-runtime-composeui-android = { group = "app.cash.paging",name = "paging-runtime-composeui-android", version.ref = "paging-compose-common" }
+cash-paging-runtime-uikit = { group = "app.cash.paging",name = "paging-runtime-uikit", version.ref = "cash-paging" }
+
+
+coroutine-worker = { group = "com.autodesk",name = "coroutineworker", version.ref = "coroutine-worker" }
+moko-resources-generator = { group = "dev.icerock.moko",name = "resources-generator", version.ref = "moko-resources" }
+parcelize-gradle-plugin = { group = "com.arkivanov.parcelize.darwin",name = "gradle-plugin", version.ref = "parcelize-gradle-plugin" }
+
+moko-resources = { group = "dev.icerock.moko",name = "resources", version.ref = "moko-resources" }
+moko-resources-compose = { group = "dev.icerock.moko",name = "resources-compose", version.ref = "moko-resources" }
+moko-graphics = { group = "dev.icerock.moko",name = "graphics", version.ref = "moko-resources" }
+napier-log = { group = "io.github.aakira",name = "napier", version.ref = "napier-version" }
+#kmm-viewmodel = { group = "com.rickclephas.kmm",name = "kmm-viewmodel-core", version.ref = "kmm-viewmodel-version" }
+image-loader = { group = "io.github.qdsfdhvh",name = "image-loader", version.ref = "image-loader" }
+image-loader-extension-moko-resources = { group = "io.github.qdsfdhvh",name = "image-loader-extension-moko-resources", version.ref = "image-loader" }
+
+moko-mvvm-core = { group = "dev.icerock.moko",name = "mvvm-core", version.ref = "moko-mvvm-version" }
+moko-gradle-plugin = { group = "dev.icerock.moko",name = "gradle-plugin", version.ref = "moko-mvvm-version" }
+moko-mvvm-core-android = { group = "dev.icerock.moko",name = "mvvm-core-android", version.ref = "moko-mvvm-version" }
+moko-mvvm-livedata = { group = "dev.icerock.moko",name = "mvvm-livedata", version.ref = "moko-mvvm-version" }
+moko-mvvm-livedata-compose = { group = "dev.icerock.moko",name = "mvvm-livedata-compose", version.ref = "moko-mvvm-version" }
+
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
+decompose-router = { module = "io.github.xxfast:decompose-router", version.ref = "decompose-router" }
+
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version = "3.2.0" }
+
+#androidx-paging= { module = "androidx.paging:paging-runtime", version.ref = "paging-version" }
+#androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "paging-version" }
+[bundles]
+plugins = [
+    "plugin-android",
+    "plugin-gver",
+    "plugin-kotlin",
+    "plugin-kotlin-serialization",
+    "sqldelight-plugin"
+]
