@@ -1,5 +1,6 @@
 package com.reverse.kmsunflower
 
+import androidx.compose.runtime.Composable
 import com.reverse.kmsunflower.utilities.Log
 import io.github.aakira.napier.DebugAntilog
 import io.ktor.client.*
@@ -15,3 +16,6 @@ expect fun httpClient(config: HttpClientConfig<*>.() -> Unit): HttpClient
  fun initLogger(){
      Log.base(DebugAntilog())
  }
+// 在 commonMain 中
+@Composable
+expect fun getScreenDensity(): Float

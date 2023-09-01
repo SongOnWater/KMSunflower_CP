@@ -1,5 +1,8 @@
 package com.reverse.kmsunflower
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import com.reverse.kmsunflower.utilities.Log
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -28,6 +31,14 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHtt
         }
     }
 }
+// 在 androidMain 中
+@Composable
+actual fun getScreenDensity(): Float {
+    Log.i("Android ScreenDensity")
+    val context = LocalContext.current // 获取当前的 Android Context
+    return context.resources.displayMetrics.density
+}
+
 //actual fun initLogger() {
 //    Napier.base(DebugAntilog())
 //}

@@ -26,9 +26,17 @@ kotlin {
         }
     }
     ios()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    //iosArm64()
+    iosArm64 {
+        binaries.executable()
+
+        compilations.configureEach {
+            compilerOptions.configure {
+                freeCompilerArgs.add("-Xallocator=custom")
+            }
+        }
+    }
+    //iosSimulatorArm64()
 
 
     cocoapods {
@@ -95,6 +103,7 @@ kotlin {
                 implementation(libs.decompose.router)
 
                 implementation(libs.kermit)
+                implementation(libs.richeditor.compose)
                 api(libs.image.loader)
                 implementation(libs.image.loader.extension.moko.resources)
             }
@@ -120,17 +129,13 @@ kotlin {
             }
         }
 
-        val iosX64Main by getting{
-            dependsOn(iosMain)
-        }
-
         val iosArm64Main by getting{
             dependsOn(iosMain)
         }
 
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }
+//        val iosSimulatorArm64Main by getting {
+//            dependsOn(iosMain)
+//        }
 
 
 
@@ -140,6 +145,7 @@ kotlin {
             }
         }
     }
+
 }
 
 android {

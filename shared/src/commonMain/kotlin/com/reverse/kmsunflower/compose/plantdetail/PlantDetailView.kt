@@ -54,6 +54,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -75,8 +76,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.reverse.kmsunflower.MR
 import com.reverse.kmsunflower.compose.Dimens
 import com.reverse.kmsunflower.compose.utils.SunflowerImage
@@ -536,8 +540,11 @@ fun pluralStringResource(wateringNeedsSuffix: PluralsResource, wateringInterval:
 @Composable
 private fun PlantDescription(description: String) {
     //TODO should render as html
-   Text(
-       text = description
+    val richTextState = rememberRichTextState().apply {
+        setHtml(description)
+    }
+    RichText(
+       state = richTextState
    )
 }
 

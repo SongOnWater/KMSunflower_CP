@@ -17,7 +17,6 @@ import com.reverse.kmsunflower.workers.SeedDatabaseWorker
 import com.seiko.imageloader.DefaultIOS
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
-import com.seiko.imageloader.component.setupDefaultComponents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -30,7 +29,6 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIWindow
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
-import okio.Path.Companion.toPath
 
 @Suppress("FunctionName", "unused")
 fun MainViewController(): UIViewController =
@@ -38,10 +36,8 @@ fun MainViewController(): UIViewController =
         initDatabase()
         val lifecycle = LifecycleRegistry()
         val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
-        CompositionLocalProvider(LocalComponentContext provides rootComponentContext
-            ,
-            LocalImageLoader provides remember { generateImageLoader()
-            }
+        CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
+            LocalImageLoader provides remember { generateImageLoader() }
             ) {
             MaterialTheme{
                 val ioScope: CoroutineScope = rememberCoroutineScope {  Dispatchers.IO }

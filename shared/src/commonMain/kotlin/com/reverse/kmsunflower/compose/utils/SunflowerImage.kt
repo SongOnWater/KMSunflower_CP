@@ -35,6 +35,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.toSize
 import co.touchlab.kermit.Logger
+import com.reverse.kmsunflower.getScreenDensity
+import com.reverse.kmsunflower.utilities.Log
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.option.Scale
 import com.seiko.imageloader.option.SizeResolver
@@ -57,21 +59,22 @@ fun SunflowerImage(
     colorFilter: ColorFilter? = null
 ) {
     var boxSize by remember { mutableStateOf(Size.Zero) }
+    val density =   getScreenDensity()
     Box(Modifier.onGloballyPositioned { coordinates ->
-        // 获取Box的大小
         boxSize = coordinates.size.toSize()
     }, Alignment.Center) {
         val request = remember(model) {
             ImageRequest {
                 data(model)
                 scale(Scale.FIT)
-                //size(SizeResolver(Size(432f,285f)))
                 addInterceptor(NullDataInterceptor)
+                options {
+                    maxImageSize = (boxSize.width.toInt()*density).toInt()
+                }
             }
         }
         val action by rememberImageAction(request)
         val painter = rememberImageActionPainter(action)
-       // Logger.i("box width:${boxSize.width}, height:${boxSize.height}")
         Image(
             painter = painter,
             contentDescription = contentDescription,

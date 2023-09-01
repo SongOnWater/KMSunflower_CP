@@ -18,6 +18,7 @@ import com.autodesk.coroutineworker.CoroutineWorker
 import com.reverse.kmsunflower.data.AppDatabase
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.utilities.Log
+import com.reverse.kmsunflower.values.JSONData.Companion.databaseRawJSONData
 import kotlinx.serialization.json.Json
 
 
@@ -28,10 +29,11 @@ class SeedDatabaseWorker(
           CoroutineWorker.execute {
               try {
                   if(!database.plantDao().hasPopulatedData()){
-                      val fileResource  = "json/plants.json"
-                      val resourceReader=ResourceReader()
-                      val fileContent=resourceReader.readText(fileResource)
-                      val plantList: List<Plant> = Json.decodeFromString(fileContent)
+                      //TODO ios not work
+//                      val fileResource  = "json/plants.json"
+//                      val resourceReader=ResourceReader()
+//                      val fileContent=resourceReader.readText(fileResource)
+                      val plantList: List<Plant> = Json.decodeFromString(databaseRawJSONData)
                       database.plantDao().insertAll(plantList)
                       Log.i("Done seeding database", null, TAG)
                   }else{

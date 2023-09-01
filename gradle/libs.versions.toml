@@ -32,6 +32,7 @@ moko-mvvm-version="0.16.1"
 decompose = "2.1.0-compose-experimental-alpha-05"
 decompose-router = "0.3.0"
 kermit = "2.0.0-RC4"
+richeditor-compose="1.0.0-beta02"
 [libraries]
 material = { module = "com.google.android.material:material", version.ref = "material" }
 accompanist-themeadapter-material = { module = "com.google.accompanist:accompanist-themeadapter-material", version.ref = "accompanist" }
@@ -103,6 +104,8 @@ decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions
 decompose-router = { module = "io.github.xxfast:decompose-router", version.ref = "decompose-router" }
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+
+richeditor-compose = { group = "com.mohamedrejeb.richeditor", name = "richeditor-compose", version.ref = "richeditor-compose" }
 
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version = "3.2.0" }
 
