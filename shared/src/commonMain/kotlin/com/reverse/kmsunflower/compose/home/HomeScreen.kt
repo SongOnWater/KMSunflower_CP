@@ -72,7 +72,10 @@ fun HomeScreen(
     gardenPlantingListViewModel: GardenPlantingListViewModel,
 ) {
 
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState{
+        SunflowerPage.values().size
+    }
+
     HomePagerScreen(
         onPlantClick = onPlantClick,
         modifier = modifier,
@@ -150,7 +153,6 @@ fun HomePagerScreen(
 
         // Pages
         HorizontalPager(
-            pageCount = pages.size,
             modifier = Modifier.background(MaterialTheme.colors.background),
             state = pagerState,
             verticalAlignment = Alignment.Top
