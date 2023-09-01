@@ -17,7 +17,6 @@
 package com.reverse.kmsunflower.compose.utils
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,19 +26,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.toSize
-import co.touchlab.kermit.Logger
-import com.reverse.kmsunflower.getScreenDensity
-import com.reverse.kmsunflower.utilities.Log
+import com.reverse.kmsunflower.getPlatform
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.option.Scale
-import com.seiko.imageloader.option.SizeResolver
 import com.seiko.imageloader.rememberImageAction
 import com.seiko.imageloader.rememberImageActionPainter
 
@@ -59,7 +53,7 @@ fun SunflowerImage(
     colorFilter: ColorFilter? = null
 ) {
     var boxSize by remember { mutableStateOf(Size.Zero) }
-    val density =   getScreenDensity()
+    val density = remember { getPlatform().screenDensity }
     Box(Modifier.onGloballyPositioned { coordinates ->
         boxSize = coordinates.size.toSize()
     }, Alignment.Center) {

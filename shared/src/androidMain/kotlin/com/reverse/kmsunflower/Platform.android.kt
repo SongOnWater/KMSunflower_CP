@@ -1,26 +1,28 @@
 package com.reverse.kmsunflower
-
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.reverse.kmsunflower.utilities.Log
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
+import android.content.Context
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.okhttp.OkHttp
 import java.util.concurrent.TimeUnit
 
 class AndroidPlatform : Platform {
+    private lateinit var context:Context
+    companion object{
+         val instance=AndroidPlatform()
+        fun init(context: Context) {
+            instance.context=context
+        }
+    }
     override val name: String = "Android ${android.os.Build.VERSION.SDK_INT}"
      override val accessKey: String
          get() =  BuildConfig.UNSPLASH_ACCESS_KEY
+    override val screenDensity: Float
+        get() = context.resources.displayMetrics.density
 
-    override fun init() {
 
-    }
 }
 
-actual fun getPlatform(): Platform = AndroidPlatform()
+actual fun getPlatform(): Platform = AndroidPlatform.instance
 actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHttp) {
     config(this)
 
@@ -31,14 +33,3 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHtt
         }
     }
 }
-// 在 androidMain 中
-@Composable
-actual fun getScreenDensity(): Float {
-    Log.i("Android ScreenDensity")
-    val context = LocalContext.current // 获取当前的 Android Context
-    return context.resources.displayMetrics.density
-}
-
-//actual fun initLogger() {
-//    Napier.base(DebugAntilog())
-//}

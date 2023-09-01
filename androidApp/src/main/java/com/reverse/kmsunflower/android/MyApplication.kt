@@ -2,6 +2,7 @@ package com.reverse.kmsunflower.android
 
 import android.app.Application
 import android.util.Log
+import com.reverse.kmsunflower.AndroidPlatform
 import com.reverse.kmsunflower.data.AppDatabase
 import com.reverse.kmsunflower.data.DatabaseDriverFactory
 import com.reverse.kmsunflower.workers.ResourceReader
@@ -21,5 +22,6 @@ class MyApplication: Application() {
         database=AppDatabase.getInstance(DatabaseDriverFactory(this), Dispatchers.Default)
         val seedWorker= SeedDatabaseWorker(database)
         seedWorker.doWork()
+        AndroidPlatform.init(this)
     }
 }

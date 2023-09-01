@@ -8,7 +8,7 @@ import io.ktor.client.*
 interface Platform {
     val name: String
     val accessKey:String
-     fun init()
+    val screenDensity:Float
 }
 
 expect fun getPlatform(): Platform
@@ -16,6 +16,4 @@ expect fun httpClient(config: HttpClientConfig<*>.() -> Unit): HttpClient
  fun initLogger(){
      Log.base(DebugAntilog())
  }
-// 在 commonMain 中
-@Composable
-expect fun getScreenDensity(): Float
+

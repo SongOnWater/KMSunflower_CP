@@ -10,17 +10,19 @@ import platform.UIKit.UIDevice
 import platform.UIKit.UIScreen
 import com.reverse.kmsunflower.utilities.Log
 
-class IOSPlatform: Platform {
+private class IOSPlatform: Platform {
+    companion object{
+        private val instance =  IOSPlatform()
+        fun getInstance():Platform= instance
+    }
     override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
     override val accessKey: String //TODO should get from info.plist
         get() = "iLUMv3gYqzJ21-56XgGI1lok5mOU8_cI36PUxQwfOPs"
+    override val screenDensity = UIScreen.mainScreen.scale.toFloat()
 
-    override fun init() {
-
-    }
 }
 
-actual fun getPlatform(): Platform = IOSPlatform()
+actual fun getPlatform(): Platform = IOSPlatform.getInstance()
 actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(Darwin) {
     config(this)
 
@@ -30,13 +32,3 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(Darwi
         }
     }
 }
-// 在 iosMain 中
-@Composable
-actual fun getScreenDensity(): Float {
-    Log.i("iOS ScreenDensity")
-    return UIScreen.mainScreen.scale.toFloat()
-}
-
-//actual fun initLogger() {
-//    Napier.base(DebugAntilog())
-//}
