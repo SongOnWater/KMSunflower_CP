@@ -1,14 +1,16 @@
 package com.reverse.kmsunflower
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.window.ComposeUIViewController
 import platform.UIKit.UIViewController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.DefaultComponentContext
 import androidx.compose.runtime.CompositionLocalProvider
 import io.github.xxfast.decompose.LocalComponentContext
-import androidx.compose.material.MaterialTheme
+import com.reverse.kmsunflower.compose.KMSunflowerTheme
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import com.reverse.kmsunflower.data.AppDatabase
 import com.reverse.kmsunflower.data.DatabaseDriverFactory
 import com.reverse.kmsunflower.data.UnsplashPhoto
@@ -29,7 +31,7 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIWindow
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
-
+import androidx.compose.material.Surface
 @Suppress("FunctionName", "unused")
 fun MainViewController(): UIViewController =
     ComposeUIViewController {
@@ -39,7 +41,7 @@ fun MainViewController(): UIViewController =
         CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
             LocalImageLoader provides remember { generateImageLoader() }
             ) {
-            MaterialTheme{
+            KMSunflowerTheme{
                 val ioScope: CoroutineScope = rememberCoroutineScope {  Dispatchers.IO }
                 SunflowerAppIOS(
                     onShareClick ={ sharePlant(ioScope,it)},

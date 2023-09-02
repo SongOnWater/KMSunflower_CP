@@ -18,7 +18,7 @@ class AndroidPlatform : Platform {
          get() =  BuildConfig.UNSPLASH_ACCESS_KEY
     override val screenDensity: Float
         get() = context.resources.displayMetrics.density
-
+    override val topSafeAreaHeight: Float=0f
 
 }
 
@@ -33,3 +33,6 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHtt
         }
     }
 }
+
+
+

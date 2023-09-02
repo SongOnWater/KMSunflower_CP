@@ -89,7 +89,6 @@ import com.reverse.kmsunflower.compose.visible
 
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.viewmodels.PlantDetailViewModel
-import dev.icerock.moko.mvvm.livedata.asLiveData
 import dev.icerock.moko.resources.PluralsResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.painterResource

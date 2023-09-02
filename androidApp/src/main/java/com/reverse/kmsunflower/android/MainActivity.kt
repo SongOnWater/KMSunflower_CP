@@ -11,12 +11,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
-import com.google.accompanist.themeadapter.material.MdcTheme
 import com.reverse.kmsunflower.SunflowerAppAndroid
 import com.reverse.kmsunflower.android.MyApplication.Companion.database
+import com.reverse.kmsunflower.compose.KMSunflowerTheme
 import com.reverse.kmsunflower.data.UnsplashPhoto
 import com.reverse.kmsunflower.compose.utils.commonConfig
-import com.seiko.imageloader.DefaultAndroid
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.cache.memory.maxSizePercent
@@ -24,6 +23,8 @@ import com.seiko.imageloader.component.setupDefaultComponents
 import com.seiko.imageloader.option.androidContext
 import io.github.xxfast.decompose.LocalComponentContext
 import okio.Path.Companion.toOkioPath
+import com.google.accompanist.themeadapter.material.MdcTheme
+import androidx.core.view.WindowCompat
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,10 +34,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(ComposeView(this).apply {
             consumeWindowInsets = false
             setContent {
-                CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
-                    LocalImageLoader provides remember { generateImageLoader() },
+                KMSunflowerTheme {
+                    CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
+                        LocalImageLoader provides remember { generateImageLoader() },
                     ) {
-                    MdcTheme {
                         SunflowerAppAndroid(
                             database= database,
                             owner=this@MainActivity,
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 }
+
             }
         })
 
@@ -75,7 +77,7 @@ class MainActivity : AppCompatActivity() {
          }
     }
     private fun sharePlant(plantName: String) {
-        val shareText = getString(R.string.app_share_text_plant, plantName)
+        val shareText = getString( R.string.app_share_text_plant,plantName)
         val shareIntent = ShareCompat.IntentBuilder(this@MainActivity)
             .setText(shareText)
             .setType("text/plain")

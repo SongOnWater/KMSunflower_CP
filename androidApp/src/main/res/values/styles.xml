@@ -1,5 +1,4 @@
 <resources>
-    <style name="AppTheme" parent="android:Theme.Material.NoActionBar"/>
 
     <style name="Base.Theme.Sunflower" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/sunflower_green_500</item>
@@ -13,7 +12,8 @@
         <item name="android:colorBackground">@color/sunflower_green_500</item>
     </style>
 
-    <style name="Theme.Sunflower" parent="Base.Theme.Sunflower"/>
+    <style name="Theme.Sunflower" parent="Theme.MaterialComponents.DayNight.NoActionBar"/>
+
 
     <style name="Theme.Sunflower.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -21,14 +21,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="windowActionBarOverlay">true</item>
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Sunflower.FAB</item>
+<!--        <item name="android:colorBackground">@color/sunflower_green_500</item>-->
     </style>
 
-    <style name="Theme.Sunflower.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="elevation">0dp</item>
-    </style>
-
-    <style name="TextAppearance.Sunflower.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
-        <item name="android:textColor">?attr/colorOnSurface</item>
-    </style>
 </resources>

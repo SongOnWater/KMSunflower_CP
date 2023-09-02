@@ -9,7 +9,7 @@ import io.ktor.client.engine.darwin.Darwin
 import platform.UIKit.UIDevice
 import platform.UIKit.UIScreen
 import com.reverse.kmsunflower.utilities.Log
-
+import platform.UIKit.UIApplication
 private class IOSPlatform: Platform {
     companion object{
         private val instance =  IOSPlatform()
@@ -19,7 +19,7 @@ private class IOSPlatform: Platform {
     override val accessKey: String //TODO should get from info.plist
         get() = "iLUMv3gYqzJ21-56XgGI1lok5mOU8_cI36PUxQwfOPs"
     override val screenDensity = UIScreen.mainScreen.scale.toFloat()
-
+    override val topSafeAreaHeight: Float= 64f
 }
 
 actual fun getPlatform(): Platform = IOSPlatform.getInstance()
