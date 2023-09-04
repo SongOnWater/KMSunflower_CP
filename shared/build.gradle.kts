@@ -103,9 +103,11 @@ kotlin {
                 implementation(libs.decompose.router)
 
                 implementation(libs.kermit)
+                implementation(libs.insetsx)
                 implementation(libs.richeditor.compose)
                 api(libs.image.loader)
                 implementation(libs.image.loader.extension.moko.resources)
+
             }
         }
 

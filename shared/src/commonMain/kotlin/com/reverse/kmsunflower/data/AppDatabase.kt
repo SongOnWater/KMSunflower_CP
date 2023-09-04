@@ -98,7 +98,7 @@ class AppDatabase private constructor(
             }.flowOn(backgroundDispatcher)
         }
 
-        fun isPlanted(plantId: String): Flow<Boolean> {
+        fun isPlanted(plantId: String): Flow<Boolean?> {
             return flowOf(gardenPlantingsQueries.isPlanted(plantId).executeAsOne())
         }
 

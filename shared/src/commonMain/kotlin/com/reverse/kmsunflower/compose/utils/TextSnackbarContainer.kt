@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.moriatsushi.insetsx.systemBarsPadding
 
 /**
  * Simple API to display a Snackbar with text on the screen
@@ -68,6 +69,7 @@ fun TextSnackbarContainer(
                 hostState = snackbarHostState,
                 modifier = modifier
                     .align(Alignment.BottomCenter)
+                    .systemBarsPadding()
                     .padding(all = 8.dp),
             ) {
                 Snackbar(it)

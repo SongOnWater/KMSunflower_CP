@@ -22,11 +22,14 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.moriatsushi.insetsx.rememberWindowInsetsController
+import com.moriatsushi.insetsx.SystemBarsBehavior
 import com.reverse.kmsunflower.compose.gallery.GalleryScreen
 import com.reverse.kmsunflower.compose.home.HomeScreen
 import com.reverse.kmsunflower.compose.home.SunflowerPage
 import com.reverse.kmsunflower.compose.plantdetail.PlantDetailsScreen
 import com.reverse.kmsunflower.data.UnsplashPhoto
+import com.reverse.kmsunflower.utilities.Log
 import com.reverse.kmsunflower.viewmodels.GalleryViewModel
 import com.reverse.kmsunflower.viewmodels.GardenPlantingListViewModel
 import com.reverse.kmsunflower.viewmodels.PlantDetailViewModel
@@ -44,7 +47,9 @@ fun SunflowerApp(
     plantDetailsViewModel:PlantDetailViewModel,
 ) {
 
-
+//    val windowInsetsController = rememberWindowInsetsController()
+//    windowInsetsController?.setStatusBarContentColor(dark = true)
+//    windowInsetsController?.setSystemBarsBehavior(SystemBarsBehavior.Immersive)
     val router = rememberRouter(
         type = SunflowerScreen::class,
         stack = listOf(SunflowerScreen.Home)
@@ -56,13 +61,15 @@ fun SunflowerApp(
                 plantListViewModel = plantListViewModel ,
                 gardenPlantingListViewModel= gardenPlantingListViewModel
             )
-            is SunflowerScreen.PlantDetail -> PlantDetailsScreen(
-                plantId=page.plantId,
-                plantDetailsViewModel= plantDetailsViewModel,
-                onBackClick = { router.pop() },
-                onShareClick=onShareClick,
-                onGalleryClick = { router.push(SunflowerScreen.Gallery(it.name)) }
-            )
+            is SunflowerScreen.PlantDetail -> {
+                PlantDetailsScreen(
+                    plantId=page.plantId,
+                    plantDetailsViewModel= plantDetailsViewModel,
+                    onBackClick = { router.pop() },
+                    onShareClick=onShareClick,
+                    onGalleryClick = { router.push(SunflowerScreen.Gallery(it.name)) }
+                )
+            }
             is SunflowerScreen.Gallery -> GalleryScreen(
                 plantName=page.plantName ,
                 galleryViewModel=galleryViewModel,

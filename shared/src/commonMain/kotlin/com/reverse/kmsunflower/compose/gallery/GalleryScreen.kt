@@ -38,6 +38,7 @@ import com.reverse.kmsunflower.values.SR
 import com.reverse.kmsunflower.viewmodels.GalleryViewModel
 import dev.icerock.moko.resources.compose.stringResource
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.moriatsushi.insetsx.statusBarsPadding
 
 @Composable
 fun GalleryScreen(
@@ -85,7 +86,7 @@ private fun GalleryTopBar(
         title = {
             Text(stringResource(MR.strings.gallery_title))
         },
-        //modifier = modifier.statusBarsPadding(),
+ //       modifier = modifier.statusBarsPadding(),
         navigationIcon = {
             IconButton(onClick = onUpClick) {
                 Icon(

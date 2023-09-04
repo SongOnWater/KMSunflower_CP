@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
 import com.reverse.kmsunflower.getPlatform
 import com.seiko.imageloader.model.ImageRequest
@@ -53,7 +54,7 @@ fun SunflowerImage(
     colorFilter: ColorFilter? = null
 ) {
     var boxSize by remember { mutableStateOf(Size.Zero) }
-    val density = remember { getPlatform().screenDensity }
+    val density = LocalDensity.current.density
     Box(Modifier.onGloballyPositioned { coordinates ->
         boxSize = coordinates.size.toSize()
     }, Alignment.Center) {
@@ -63,7 +64,7 @@ fun SunflowerImage(
                 scale(Scale.FIT)
                 addInterceptor(NullDataInterceptor)
                 options {
-                    maxImageSize = (boxSize.width.toInt()*density).toInt()
+                    maxImageSize = (boxSize.width.toInt()* density).toInt()
                 }
             }
         }

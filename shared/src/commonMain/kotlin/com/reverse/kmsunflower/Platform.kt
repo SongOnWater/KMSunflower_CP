@@ -8,8 +8,6 @@ import io.ktor.client.*
 interface Platform {
     val name: String
     val accessKey:String
-    val screenDensity:Float
-    val topSafeAreaHeight:Float
 }
 
 expect fun getPlatform(): Platform

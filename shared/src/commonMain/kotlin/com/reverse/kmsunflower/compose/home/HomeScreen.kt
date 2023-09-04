@@ -39,8 +39,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.moriatsushi.insetsx.WindowInsetsController
+//import com.moriatsushi.insetsx.statusBarsPadding
 import com.reverse.kmsunflower.MR
+import com.reverse.kmsunflower.compose.collapse.CollapsingToolbarScaffold
+import com.reverse.kmsunflower.compose.collapse.ScrollStrategy
+import com.reverse.kmsunflower.compose.collapse.rememberCollapsingToolbarScaffoldState
 import com.reverse.kmsunflower.compose.plantlist.PlantListScreen
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.data.PlantAndGardenPlantings
@@ -53,6 +59,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import com.reverse.kmsunflower.compose.garden.GardenScreen
+import com.reverse.kmsunflower.utilities.Log
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 
 enum class SunflowerPage(
@@ -121,67 +128,77 @@ fun HomePagerScreen(
     plants: List<Plant>,
     pagerState: PagerState
 ) {
-
-    // Use Modifier.nestedScroll + rememberNestedScrollInteropConnection() here so that this
-    // composable participates in the nested scroll hierarchy so that HomeScreen can be used in
-    // use cases like a collapsing toolbar
-    Column {
-        val coroutineScope = rememberCoroutineScope()
-        HomeTopAppBar(
-            pagerState = pagerState,
-            onFilterClick = onFilterClick
-        )
-        // Tab Row
-        TabRow(selectedTabIndex = pagerState.currentPage) {
-            pages.forEachIndexed { index, page ->
-                val title = stringResource(page.titleResId)
-                Tab(
-                    selected = pagerState.currentPage == index,
-                    onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                    text = { Text(text = title) },
-                    icon = {
-                        Icon(
-                            painter = painterResource(page.drawableResId),
-                            contentDescription = title
-                        )
-                    },
-                    unselectedContentColor = MaterialTheme.colors.primaryVariant,
-                    selectedContentColor = MaterialTheme.colors.secondary,
-                )
-            }
+    val state = rememberCollapsingToolbarScaffoldState()
+    CollapsingToolbarScaffold(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        scrollStrategy = ScrollStrategy.EnterAlwaysCollapsed,
+        toolbarModifier = Modifier.background(MaterialTheme.colors.primary),
+        enabled = true,
+        toolbar={
+            Log.i("state.offsetYState${state.offsetYState},state.offsetY${state.offsetY},")
+            HomeTopAppBar(
+                pagerState = pagerState,
+                onFilterClick = onFilterClick
+            )
         }
-
-        // Pages
-        HorizontalPager(
-            modifier = Modifier.background(MaterialTheme.colors.background),
-            state = pagerState,
-            verticalAlignment = Alignment.Top
-        ) { index ->
-            when (pages[index]) {
-                SunflowerPage.MY_GARDEN -> {
-                    GardenScreen(
-                        gardenPlants = gardenPlants,
-                        modifier = Modifier.fillMaxSize(),
-                        onAddPlantClick = {
-                            coroutineScope.launch {
-                                pagerState.scrollToPage(SunflowerPage.PLANT_LIST.ordinal)
-                            }
+    ){
+        Column {
+            val coroutineScope = rememberCoroutineScope()
+            // Tab Row
+            TabRow(selectedTabIndex = pagerState.currentPage) {
+                pages.forEachIndexed { index, page ->
+                    val title = stringResource(page.titleResId)
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
+                        text = { Text(text = title) },
+                        icon = {
+                            Icon(
+                                painter = painterResource(page.drawableResId),
+                                contentDescription = title
+                            )
                         },
-                        onPlantClick = {
-                            onPlantClick(it.plant)
-                        })
-                }
-
-                SunflowerPage.PLANT_LIST -> {
-                    PlantListScreen(
-                        plants = plants,
-                        onPlantClick = onPlantClick,
-                        modifier = Modifier.fillMaxSize(),
+                        unselectedContentColor = MaterialTheme.colors.primaryVariant,
+                        selectedContentColor = MaterialTheme.colors.secondary,
                     )
+                }
+            }
+
+            // Pages
+            HorizontalPager(
+                modifier = Modifier.background(MaterialTheme.colors.background),
+                state = pagerState,
+                verticalAlignment = Alignment.Top
+            ) { index ->
+                when (pages[index]) {
+                    SunflowerPage.MY_GARDEN -> {
+                        GardenScreen(
+                            gardenPlants = gardenPlants,
+                            modifier = Modifier.fillMaxSize(),
+                            onAddPlantClick = {
+                                coroutineScope.launch {
+                                    pagerState.scrollToPage(SunflowerPage.PLANT_LIST.ordinal)
+                                }
+                            },
+                            onPlantClick = {
+                                onPlantClick(it.plant)
+                            })
+                    }
+
+                    SunflowerPage.PLANT_LIST -> {
+                        PlantListScreen(
+                            plants = plants,
+                            onPlantClick = onPlantClick,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                 }
             }
         }
     }
+
+
 }
 
 
@@ -193,6 +210,7 @@ private fun HomeTopAppBar(
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
+        //backgroundColor = Color.Red ,
         title = {
             Row(
                 Modifier.fillMaxWidth(),
@@ -203,7 +221,7 @@ private fun HomeTopAppBar(
                 )
             }
         },
-        // modifier.statusBarsPadding(),
+        //modifier = modifier.statusBarsPadding(),
         actions = {
             if (pagerState.currentPage == SunflowerPage.PLANT_LIST.ordinal) {
                 IconButton(onClick = onFilterClick) {

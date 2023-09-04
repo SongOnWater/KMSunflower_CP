@@ -32,9 +32,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -54,7 +52,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -76,11 +73,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
+//import com.moriatsushi.insetsx.statusBarsPadding
+import com.moriatsushi.insetsx.systemBarsPadding
 import com.reverse.kmsunflower.MR
 import com.reverse.kmsunflower.compose.Dimens
 import com.reverse.kmsunflower.compose.utils.SunflowerImage
@@ -88,7 +86,9 @@ import com.reverse.kmsunflower.compose.utils.TextSnackbarContainer
 import com.reverse.kmsunflower.compose.visible
 
 import com.reverse.kmsunflower.data.Plant
+import com.reverse.kmsunflower.utilities.Log
 import com.reverse.kmsunflower.viewmodels.PlantDetailViewModel
+import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 import dev.icerock.moko.resources.PluralsResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.painterResource
@@ -115,11 +115,10 @@ fun PlantDetailsScreen(
     onShareClick: (String) -> Unit,
     onGalleryClick: (Plant) -> Unit,
 ) {
-    var plant = plantDetailsViewModel.plant(plantId).collectAsState(initial = Plant.emptyPlant)
-
-    val isPlanted = plantDetailsViewModel.isPlanted(plantId).collectAsState(initial = false)
-    val showSnackbar = plantDetailsViewModel.showSnackbar.value
-
+    Log.i("PlantDetailsScreen plantDetailsViewModel:${plantDetailsViewModel}")
+    val plant = plantDetailsViewModel.plant(plantId).collectAsState(Plant.emptyPlant).value
+    val isPlanted = plantDetailsViewModel.isPlanted(plantId).collectAsState(initial = null).value
+    val showSnackbar = plantDetailsViewModel.showSnackbar.observeAsState().value
     if (plant != null && isPlanted != null && showSnackbar != null) {
         Surface {
             TextSnackbarContainer(
@@ -128,8 +127,8 @@ fun PlantDetailsScreen(
                 onDismissSnackbar = { plantDetailsViewModel.dismissSnackbar() }
             ) {
                 PlantDetails(
-                    plant.value,
-                    isPlanted.value,
+                    plant,
+                    isPlanted,
                     plantDetailsViewModel.hasValidUnsplashKey(),
                     PlantDetailsCallbacks(
                         onBackClick = onBackClick,
@@ -198,7 +197,7 @@ fun PlantDetails(
     Box(
         modifier
             .fillMaxSize()
-            //.systemBarsPadding()
+            .systemBarsPadding()
             // attach as a parent to the nested scroll system
             .nestedScroll(nestedScrollConnection)
     ) {
@@ -417,7 +416,7 @@ private fun PlantHeaderActions(
     Row(
         modifier = modifier
             .fillMaxSize()
-            //.systemBarsPadding()
+            .systemBarsPadding()
             .padding(top = Dimens.ToolbarIconPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -485,7 +484,11 @@ private fun PlantInformation(
                     bottom = Dimens.PaddingNormal
                 )
                 .align(Alignment.CenterHorizontally)
-                .onGloballyPositioned { onNamePosition(it.positionInWindow().y) }
+                .onGloballyPositioned {
+                    val y=it.positionInWindow().y
+                    Log.i("y:$y")
+                    onNamePosition(y)
+                }
                 .visible { toolbarState == ToolbarState.HIDDEN }
         )
         Box(
@@ -543,7 +546,8 @@ private fun PlantDescription(description: String) {
         setHtml(description)
     }
     RichText(
-       state = richTextState
+       state = richTextState,
+        modifier = Modifier.padding(bottom = Dimens.PaddingLargeX)
    )
 }
 

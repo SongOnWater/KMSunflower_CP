@@ -18,8 +18,6 @@ private class IOSPlatform: Platform {
     override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
     override val accessKey: String //TODO should get from info.plist
         get() = "iLUMv3gYqzJ21-56XgGI1lok5mOU8_cI36PUxQwfOPs"
-    override val screenDensity = UIScreen.mainScreen.scale.toFloat()
-    override val topSafeAreaHeight: Float= 64f
 }
 
 actual fun getPlatform(): Platform = IOSPlatform.getInstance()

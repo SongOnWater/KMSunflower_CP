@@ -39,6 +39,8 @@ object Dimens {
 
     val PaddingLarge: Dp = 24.dp
 
+    val PaddingLargeX: Dp = 48.dp
+
     val PlantDetailAppBarHeight: Dp
         @Composable get() = dimensionResource(SR.dimen.plant_detail_app_bar_height)
 

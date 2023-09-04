@@ -16,10 +16,6 @@ class AndroidPlatform : Platform {
     override val name: String = "Android ${android.os.Build.VERSION.SDK_INT}"
      override val accessKey: String
          get() =  BuildConfig.UNSPLASH_ACCESS_KEY
-    override val screenDensity: Float
-        get() = context.resources.displayMetrics.density
-    override val topSafeAreaHeight: Float=0f
-
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform.instance

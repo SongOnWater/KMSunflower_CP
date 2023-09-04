@@ -20,6 +20,7 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.ScrollState
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import com.reverse.kmsunflower.utilities.Log
 
 // Value obtained empirically so that the header buttons don't surpass the header container
 private val HeaderTransitionOffset = 190.dp
@@ -34,14 +35,17 @@ data class PlantDetailsScroller(
     val toolbarTransitionState = MutableTransitionState(ToolbarState.HIDDEN)
 
     fun getToolbarState(density: Density): ToolbarState {
+        Log.i("scrollState:${scrollState.value},namePosition:$namePosition")
         // When the namePosition is placed correctly on the screen (position > 1f) and it's
         // position is close to the header, then show the toolbar.
         return if (namePosition > 1f &&
             scrollState.value > (namePosition - getTransitionOffset(density))
         ) {
+            Log.i("if")
             toolbarTransitionState.targetState = ToolbarState.SHOWN
             ToolbarState.SHOWN
         } else {
+            Log.i("else")
             toolbarTransitionState.targetState = ToolbarState.HIDDEN
             ToolbarState.HIDDEN
         }

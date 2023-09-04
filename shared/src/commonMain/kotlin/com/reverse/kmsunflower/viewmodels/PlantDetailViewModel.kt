@@ -46,9 +46,10 @@ class PlantDetailViewModel  constructor(
 
     fun isPlanted(plantId: String) = gardenPlantingRepository.isPlanted(plantId)
 
-    fun  plant(plantId: String) :Flow<Plant> {
-       return plantRepository.getPlant(plantId)
-    }
+    fun  plant(plantId: String) = plantRepository.getPlant(plantId)
+//    fun  plant(plantId: String) = plantRepository.getPlant(plantId).asLiveData(
+//        viewModelScope,Plant.emptyPlant
+//    )
 
     private val _showSnackbar = MutableLiveData(false)
     val showSnackbar: LiveData<Boolean>

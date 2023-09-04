@@ -1,5 +1,6 @@
 package com.reverse.kmsunflower.android
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -29,7 +30,7 @@ import androidx.core.view.WindowCompat
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //WindowCompat.setDecorFitsSystemWindows(window, false)
+       // WindowCompat.setDecorFitsSystemWindows(window, false)
         val rootComponentContext: DefaultComponentContext = defaultComponentContext()
         setContentView(ComposeView(this).apply {
             consumeWindowInsets = false
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
              }
          }
     }
+    @SuppressLint("SuspiciousIndentation")
     private fun sharePlant(plantName: String) {
         val shareText = getString( R.string.app_share_text_plant,plantName)
         val shareIntent = ShareCompat.IntentBuilder(this@MainActivity)

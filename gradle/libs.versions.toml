@@ -103,11 +103,12 @@ decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decom
 decompose-compose-multiplatform = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 decompose-router = { module = "io.github.xxfast:decompose-router", version.ref = "decompose-router" }
 
-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
-
+kermit = { group = "co.touchlab", name= "kermit", version.ref = "kermit" }
 richeditor-compose = { group = "com.mohamedrejeb.richeditor", name = "richeditor-compose", version.ref = "richeditor-compose" }
+insetsx = { group = "com.moriatsushi.insetsx", name = "insetsx", version = "0.1.0-alpha10" }
 
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version = "3.2.0" }
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version = "1.6.0" }
 
 #androidx-paging= { module = "androidx.paging:paging-runtime", version.ref = "paging-version" }
 #androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "paging-version" }
