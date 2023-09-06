@@ -2,7 +2,7 @@ package com.reverse.kmsunflower
 
 import androidx.compose.runtime.*
 import com.reverse.kmsunflower.api.UnsplashService
-import com.reverse.kmsunflower.compose.SunflowerApp
+import com.reverse.kmsunflower.compose.SunflowerAppThemed
 import com.reverse.kmsunflower.data.AppDatabase
 import com.reverse.kmsunflower.data.DatabaseDriverFactory
 import com.reverse.kmsunflower.data.GardenPlantingRepository
@@ -70,7 +70,7 @@ internal fun SunflowerAppIOS(
     onPhotoClick: (UnsplashPhoto) -> Unit,
 ) {
     val database=AppDatabase.getInstance(DatabaseDriverFactory(),Dispatchers.Default)
-    SunflowerApp(
+    SunflowerAppThemed(
         onShareClick = onShareClick,
         onPhotoClick = onPhotoClick,
         galleryViewModel = getGalleryViewModel(),
