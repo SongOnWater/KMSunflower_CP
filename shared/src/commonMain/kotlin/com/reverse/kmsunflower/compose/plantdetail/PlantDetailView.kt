@@ -77,6 +77,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.mohamedrejeb.richeditor.annotation.ExperimentalRichTextApi
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.moriatsushi.insetsx.statusBarsPadding
@@ -544,11 +545,15 @@ fun pluralStringResource(wateringNeedsSuffix: PluralsResource, wateringInterval:
     return StringDesc.PluralFormatted(wateringNeedsSuffix, wateringInterval, wateringInterval1).localized()
 }
 
+@OptIn(ExperimentalRichTextApi::class)
 @Composable
 private fun PlantDescription(description: String) {
-    //TODO should render as html
+
     val richTextState = rememberRichTextState().apply {
         setHtml(description)
+        setConfig(
+            linkColor = MaterialTheme.colorScheme.primary
+        )
     }
     RichText(
        state = richTextState,
