@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
@@ -60,6 +61,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -72,7 +74,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.moriatsushi.insetsx.statusBarsPadding
@@ -251,16 +255,19 @@ private fun PlantDetailsContent(
                 modifier = Modifier
                     .alpha(contentAlpha())
             )
-
             if (!isPlanted) {
-              Box( modifier = Modifier.fillMaxWidth()) {
-                  PlantFab(
-                      onFabClick = onFabClick,
-                      modifier = Modifier
-                          .align(Alignment.CenterEnd)
-                          .alpha(contentAlpha())
-                  )
-              }
+                var boxSize by remember { mutableStateOf(IntSize.Zero) }
+                PlantFab(
+                    onFabClick = onFabClick,
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            boxSize = coordinates.size
+                        }
+                        .align(Alignment.End)
+                        .padding(end=Dimens.PaddingSmall)
+                        .offset(y= (boxSize.height/6).unaryMinus().dp)
+                        .alpha(contentAlpha())
+                )
             }
 
             PlantInformation(
