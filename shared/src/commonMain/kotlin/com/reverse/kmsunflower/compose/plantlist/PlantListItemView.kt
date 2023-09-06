@@ -21,21 +21,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import com.reverse.kmsunflower.MR
-import com.reverse.kmsunflower.compose.card
 import com.reverse.kmsunflower.compose.utils.SunflowerImage
 import com.reverse.kmsunflower.compose.utils.dimensionResource
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.data.UnsplashPhoto
+import com.reverse.kmsunflower.utilities.Log
 import com.reverse.kmsunflower.values.SR
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -49,13 +50,13 @@ fun PhotoListItem(photo: UnsplashPhoto, onClick: () -> Unit) {
     ImageListItem(name = photo.user.name, imageUrl = photo.urls.small, onClick = onClick)
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageListItem(name: String, imageUrl: String, onClick: () -> Unit) {
+    val colors=CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     Card(
         onClick = onClick,
-        elevation = dimensionResource(id = SR.dimen.card_elevation),
-        shape = MaterialTheme.shapes.card,
+        colors = colors,
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = SR.dimen.card_side_margin))
             .padding(bottom = dimensionResource(id = SR.dimen.card_bottom_margin))

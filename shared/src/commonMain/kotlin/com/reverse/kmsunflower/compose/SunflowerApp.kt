@@ -29,6 +29,7 @@ import com.reverse.kmsunflower.compose.home.HomeScreen
 import com.reverse.kmsunflower.compose.home.SunflowerPage
 import com.reverse.kmsunflower.compose.plantdetail.PlantDetailsScreen
 import com.reverse.kmsunflower.data.UnsplashPhoto
+import com.reverse.kmsunflower.ui.SunflowerTheme
 import com.reverse.kmsunflower.utilities.Log
 import com.reverse.kmsunflower.viewmodels.GalleryViewModel
 import com.reverse.kmsunflower.viewmodels.GardenPlantingListViewModel
@@ -36,7 +37,26 @@ import com.reverse.kmsunflower.viewmodels.PlantDetailViewModel
 import com.reverse.kmsunflower.viewmodels.PlantListViewModel
 import io.github.xxfast.decompose.router.content.RoutedContent
 import io.github.xxfast.decompose.router.rememberRouter
-
+@Composable
+fun SunflowerAppThemed(
+    onShareClick: (String) -> Unit,
+    onPhotoClick: (UnsplashPhoto) -> Unit,
+    galleryViewModel: GalleryViewModel,
+    plantListViewModel: PlantListViewModel,
+    gardenPlantingListViewModel: GardenPlantingListViewModel,
+    plantDetailsViewModel:PlantDetailViewModel,
+){
+    SunflowerTheme {
+        SunflowerApp(
+            onShareClick = onShareClick,
+            onPhotoClick = onPhotoClick,
+            galleryViewModel = galleryViewModel,
+            plantListViewModel = plantListViewModel,
+            gardenPlantingListViewModel = gardenPlantingListViewModel,
+            plantDetailsViewModel = plantDetailsViewModel
+        )
+    }
+}
 @Composable
 fun SunflowerApp(
     onShareClick: (String) -> Unit,
@@ -47,9 +67,6 @@ fun SunflowerApp(
     plantDetailsViewModel:PlantDetailViewModel,
 ) {
 
-//    val windowInsetsController = rememberWindowInsetsController()
-//    windowInsetsController?.setStatusBarContentColor(dark = true)
-//    windowInsetsController?.setSystemBarsBehavior(SystemBarsBehavior.Immersive)
     val router = rememberRouter(
         type = SunflowerScreen::class,
         stack = listOf(SunflowerScreen.Home)

@@ -23,30 +23,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import com.moriatsushi.insetsx.WindowInsetsController
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.moriatsushi.insetsx.statusBarsPadding
 //import com.moriatsushi.insetsx.statusBarsPadding
 import com.reverse.kmsunflower.MR
-import com.reverse.kmsunflower.compose.collapse.CollapsingToolbarScaffold
-import com.reverse.kmsunflower.compose.collapse.ScrollStrategy
-import com.reverse.kmsunflower.compose.collapse.rememberCollapsingToolbarScaffoldState
 import com.reverse.kmsunflower.compose.plantlist.PlantListScreen
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.data.PlantAndGardenPlantings
@@ -70,7 +71,7 @@ enum class SunflowerPage(
     PLANT_LIST(MR.strings.plant_list_title, MR.images.ic_plant_list_active)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -82,14 +83,27 @@ fun HomeScreen(
     val pagerState = rememberPagerState{
         SunflowerPage.values().size
     }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    HomePagerScreen(
-        onPlantClick = onPlantClick,
-        modifier = modifier,
-        plantListViewModel = plantListViewModel,
-        gardenPlantingListViewModel = gardenPlantingListViewModel,
-        pagerState = pagerState
-    )
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            HomeTopAppBar(
+                pagerState = pagerState,
+                onFilterClick =  { plantListViewModel.updateData() },
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) {
+        HomePagerScreen(
+            onPlantClick = onPlantClick,
+            modifier = modifier.padding(it),
+            plantListViewModel = plantListViewModel,
+            gardenPlantingListViewModel = gardenPlantingListViewModel,
+            pagerState = pagerState
+        )
+    }
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -106,7 +120,6 @@ fun HomePagerScreen(
     val plants by plantListViewModel.plants.observeAsState()
     //val stateFlowPlants by flowPlants.collectAsState(initial = emptyList())
     HomePagerScreen(
-        onFilterClick = { plantListViewModel.updateData() },
         onPlantClick = onPlantClick,
         modifier = modifier,
         pages = pages,
@@ -120,7 +133,6 @@ fun HomePagerScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomePagerScreen(
-    onFilterClick: () -> Unit,
     onPlantClick: (Plant) -> Unit,
     modifier: Modifier = Modifier,
     pages: Array<SunflowerPage> = SunflowerPage.values(),
@@ -128,71 +140,54 @@ fun HomePagerScreen(
     plants: List<Plant>,
     pagerState: PagerState
 ) {
-    val state = rememberCollapsingToolbarScaffoldState()
-    CollapsingToolbarScaffold(
-        modifier = Modifier.fillMaxSize(),
-        state = state,
-        scrollStrategy = ScrollStrategy.EnterAlwaysCollapsed,
-        toolbarModifier = Modifier.background(MaterialTheme.colors.primary),
-        enabled = true,
-        toolbar={
-            Log.i("state.offsetYState${state.offsetYState},state.offsetY${state.offsetY},")
-            HomeTopAppBar(
-                pagerState = pagerState,
-                onFilterClick = onFilterClick
-            )
-        }
-    ){
-        Column {
-            val coroutineScope = rememberCoroutineScope()
-            // Tab Row
-            TabRow(selectedTabIndex = pagerState.currentPage) {
-                pages.forEachIndexed { index, page ->
-                    val title = stringResource(page.titleResId)
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                        text = { Text(text = title) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(page.drawableResId),
-                                contentDescription = title
-                            )
-                        },
-                        unselectedContentColor = MaterialTheme.colors.primaryVariant,
-                        selectedContentColor = MaterialTheme.colors.secondary,
-                    )
-                }
-            }
-
-            // Pages
-            HorizontalPager(
-                modifier = Modifier.background(MaterialTheme.colors.background),
-                state = pagerState,
-                verticalAlignment = Alignment.Top
-            ) { index ->
-                when (pages[index]) {
-                    SunflowerPage.MY_GARDEN -> {
-                        GardenScreen(
-                            gardenPlants = gardenPlants,
-                            modifier = Modifier.fillMaxSize(),
-                            onAddPlantClick = {
-                                coroutineScope.launch {
-                                    pagerState.scrollToPage(SunflowerPage.PLANT_LIST.ordinal)
-                                }
-                            },
-                            onPlantClick = {
-                                onPlantClick(it.plant)
-                            })
-                    }
-
-                    SunflowerPage.PLANT_LIST -> {
-                        PlantListScreen(
-                            plants = plants,
-                            onPlantClick = onPlantClick,
-                            modifier = Modifier.fillMaxSize(),
+    Column (modifier){
+        val coroutineScope = rememberCoroutineScope()
+        // Tab Row
+        TabRow(selectedTabIndex = pagerState.currentPage) {
+            pages.forEachIndexed { index, page ->
+                val title = stringResource(page.titleResId)
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
+                    text = { Text(text = title) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(page.drawableResId),
+                            contentDescription = title
                         )
-                    }
+                    },
+                    unselectedContentColor = MaterialTheme.colorScheme.secondary,
+                )
+            }
+        }
+
+        // Pages
+        HorizontalPager(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            state = pagerState,
+            verticalAlignment = Alignment.Top
+        ) { index ->
+            when (pages[index]) {
+                SunflowerPage.MY_GARDEN -> {
+                    GardenScreen(
+                        gardenPlants = gardenPlants,
+                        modifier = Modifier.fillMaxSize(),
+                        onAddPlantClick = {
+                            coroutineScope.launch {
+                                pagerState.scrollToPage(SunflowerPage.PLANT_LIST.ordinal)
+                            }
+                        },
+                        onPlantClick = {
+                            onPlantClick(it.plant)
+                        })
+                }
+
+                SunflowerPage.PLANT_LIST -> {
+                    PlantListScreen(
+                        plants = plants,
+                        onPlantClick = onPlantClick,
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
             }
         }
@@ -202,11 +197,14 @@ fun HomePagerScreen(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalResourceApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 private fun HomeTopAppBar(
     pagerState: PagerState,
     onFilterClick: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -217,11 +215,12 @@ private fun HomeTopAppBar(
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = stringResource(MR.strings.app_name)
+                    text = stringResource(MR.strings.app_name),
+                    style = MaterialTheme.typography.displaySmall
                 )
             }
         },
-        //modifier = modifier.statusBarsPadding(),
+        modifier = modifier.statusBarsPadding(),
         actions = {
             if (pagerState.currentPage == SunflowerPage.PLANT_LIST.ordinal) {
                 IconButton(onClick = onFilterClick) {
@@ -229,13 +228,12 @@ private fun HomeTopAppBar(
                         painter = painterResource(MR.images.ic_filter_list_24dp),
                         contentDescription = stringResource(
                             MR.strings.menu_filter_by_grow_zone
-                        ),
-                        tint = MaterialTheme.colors.onPrimary
+                        )
                     )
                 }
             }
         },
-        elevation = 0.dp
+        scrollBehavior = scrollBehavior
     )
 }
 

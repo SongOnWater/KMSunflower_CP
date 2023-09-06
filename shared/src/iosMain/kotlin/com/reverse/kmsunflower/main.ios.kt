@@ -31,22 +31,22 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIWindow
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
+import com.moriatsushi.insetsx.WindowInsetsUIViewController
+
 import androidx.compose.material.Surface
 @Suppress("FunctionName", "unused")
 fun MainViewController(): UIViewController =
-    ComposeUIViewController {
+    WindowInsetsUIViewController {
         initDatabase()
         val lifecycle = LifecycleRegistry()
         val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
         CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
             LocalImageLoader provides remember { generateImageLoader() }
             ) {
-            KMSunflowerTheme{
-                val ioScope: CoroutineScope = rememberCoroutineScope {  Dispatchers.IO }
-                SunflowerAppIOS(
-                    onShareClick ={ sharePlant(ioScope,it)},
-                    ::openPhotoInBrowser)
-            }
+            val ioScope: CoroutineScope = rememberCoroutineScope {  Dispatchers.IO }
+            SunflowerAppIOS(
+                onShareClick ={ sharePlant(ioScope,it)},
+                ::openPhotoInBrowser)
         }
     }
 private fun generateImageLoader(): ImageLoader {

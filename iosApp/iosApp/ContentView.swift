@@ -22,8 +22,8 @@ struct ComposeView: UIViewControllerRepresentable {
 struct ContentView: View {
     var body: some View {
         ZStack{
-            Color(hex:0x49bb79).ignoresSafeArea()
-            ComposeView().ignoresSafeArea(edges: .bottom)
+           // Color(hex:0x49bb79).ignoresSafeArea()
+            ComposeView().ignoresSafeArea()
         }
       
     }

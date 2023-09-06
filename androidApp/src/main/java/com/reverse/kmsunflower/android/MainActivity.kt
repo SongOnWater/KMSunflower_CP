@@ -1,15 +1,22 @@
 package com.reverse.kmsunflower.android
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.core.app.ShareCompat
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import com.reverse.kmsunflower.SunflowerAppAndroid
@@ -24,34 +31,29 @@ import com.seiko.imageloader.component.setupDefaultComponents
 import com.seiko.imageloader.option.androidContext
 import io.github.xxfast.decompose.LocalComponentContext
 import okio.Path.Companion.toOkioPath
-import com.google.accompanist.themeadapter.material.MdcTheme
 import androidx.core.view.WindowCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       // WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         val rootComponentContext: DefaultComponentContext = defaultComponentContext()
-        setContentView(ComposeView(this).apply {
-            consumeWindowInsets = false
-            setContent {
-                KMSunflowerTheme {
-                    CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
-                        LocalImageLoader provides remember { generateImageLoader() },
-                    ) {
-                        SunflowerAppAndroid(
-                            database= database,
-                            owner=this@MainActivity,
-                            onShareClick = ::sharePlant,
-                            onPhotoClick = ::openPhotoInBrowser
-                        )
-                    }
-                }
-
+        setContent {
+            SetSystemUI()
+            CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
+                LocalImageLoader provides remember { generateImageLoader() },
+            ) {
+                SunflowerAppAndroid(
+                    database= database,
+                    owner=this@MainActivity,
+                    onShareClick = ::sharePlant,
+                    onPhotoClick = ::openPhotoInBrowser
+                )
             }
-        })
-
+        }
     }
+
     private fun generateImageLoader(): ImageLoader {
 //        return ImageLoader {
 //            takeFrom(ImageLoader.DefaultAndroid(applicationContext).config)
@@ -92,5 +94,23 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)
     }
-
+}
+@Composable
+private fun SetSystemUI(){
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        val systemUiController = rememberSystemUiController()
+        val useDarkIcons = !isSystemInDarkTheme()
+        val window = (view.context as Activity).window
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        DisposableEffect(systemUiController, useDarkIcons) {
+            // Update all of the system bar colors to be transparent, and use
+            // dark icons if we're in light theme
+            systemUiController.setSystemBarsColor(
+                color = Color.Transparent,
+                darkIcons = useDarkIcons
+            )
+            onDispose {}
+        }
+    }
 }

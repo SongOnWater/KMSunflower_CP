@@ -37,21 +37,19 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,7 +75,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
-//import com.moriatsushi.insetsx.statusBarsPadding
+import com.moriatsushi.insetsx.statusBarsPadding
 import com.moriatsushi.insetsx.systemBarsPadding
 import com.reverse.kmsunflower.MR
 import com.reverse.kmsunflower.compose.Dimens
@@ -197,7 +195,6 @@ fun PlantDetails(
     Box(
         modifier
             .fillMaxSize()
-            .systemBarsPadding()
             // attach as a parent to the nested scroll system
             .nestedScroll(nestedScrollConnection)
     ) {
@@ -284,7 +281,7 @@ private fun PlantImage(
     imageUrl: String,
     imageHeight: Dp,
     modifier: Modifier = Modifier,
-    placeholderColor: Color = MaterialTheme.colors.onSurface.copy(0.2f)
+    placeholderColor: Color = MaterialTheme.colorScheme.onSurface.copy(0.2f)
 ) {
     var isLoading by remember { mutableStateOf(true) }
     Box(
@@ -359,6 +356,7 @@ private fun PlantToolbar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PlantDetailsToolbar(
     plantName: String,
@@ -368,45 +366,48 @@ private fun PlantDetailsToolbar(
 ) {
     Surface {
         TopAppBar(
-            //modifier = modifier.statusBarsPadding(),
-            backgroundColor = MaterialTheme.colors.surface
-        ) {
-            IconButton(
-                onBackClick,
-                Modifier.align(Alignment.CenterVertically)
-            ) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = stringResource( MR.strings.a11y_back)
-                )
+            modifier = modifier
+                .statusBarsPadding()
+                .background(color = MaterialTheme.colorScheme.surface),
+            title = {
+                Row {
+                    IconButton(
+                        onBackClick,
+                        Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(MR.strings.a11y_back)
+                        )
+                    }
+                    Text(
+                        text = plantName,
+                        style = MaterialTheme.typography.titleLarge,
+                        // As title in TopAppBar has extra inset on the left, need to do this: b/158829169
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                    )
+                    val shareContentDescription =
+                        stringResource(MR.strings.menu_item_share_plant)
+                    IconButton(
+                        onShareClick,
+                        Modifier
+                            .align(Alignment.CenterVertically)
+                            // Semantics in parent due to https://issuetracker.google.com/184825850
+                            .semantics { contentDescription = shareContentDescription }
+                    ) {
+                        Icon(
+                            Icons.Filled.Share,
+                            contentDescription = null
+                        )
+                    }
+                }
             }
-            Text(
-                text = plantName,
-                style = MaterialTheme.typography.h6,
-                // As title in TopAppBar has extra inset on the left, need to do this: b/158829169
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-            )
-            val shareContentDescription =
-                stringResource(MR.strings.menu_item_share_plant)
-            IconButton(
-                onShareClick,
-                Modifier
-                    .align(Alignment.CenterVertically)
-                    // Semantics in parent due to https://issuetracker.google.com/184825850
-                    .semantics { contentDescription = shareContentDescription }
-            ) {
-                Icon(
-                    Icons.Filled.Share,
-                    contentDescription = null
-                )
-            }
-        }
+        )
     }
 }
-
 @Composable
 private fun PlantHeaderActions(
     onBackClick: () -> Unit,
@@ -426,7 +427,7 @@ private fun PlantHeaderActions(
                 maxHeight = Dimens.ToolbarIconSize
             )
             .background(
-                color = MaterialTheme.colors.surface,
+                color = MaterialTheme.colorScheme.surface,
                 shape = CircleShape
             )
 
@@ -476,7 +477,7 @@ private fun PlantInformation(
     Column(modifier = modifier.padding(Dimens.PaddingLarge)) {
         Text(
             text = name,
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.displaySmall,
             modifier = Modifier
                 .padding(
                     start = Dimens.PaddingSmall,
@@ -503,23 +504,20 @@ private fun PlantInformation(
             Column(Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(MR.strings.watering_needs_prefix),
-                    color = MaterialTheme.colors.primaryVariant,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(horizontal = Dimens.PaddingSmall)
                         .align(Alignment.CenterHorizontally)
                 )
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(
-                        text = pluralStringResource(
-                            MR.plurals.watering_needs_suffix,
-                            wateringInterval,
-                            wateringInterval
-                        ),
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                    )
-                }
+                val wateringIntervalText = pluralStringResource(
+                    MR.plurals.watering_needs_suffix, wateringInterval, wateringInterval
+                )
+
+                Text(
+                    text = wateringIntervalText,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                )
             }
             if (hasValidUnsplashKey) {
                 Image(

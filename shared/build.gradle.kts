@@ -36,7 +36,15 @@ kotlin {
             }
         }
     }
-    //iosSimulatorArm64()
+    iosSimulatorArm64{
+        binaries.executable()
+
+        compilations.configureEach {
+            compilerOptions.configure {
+                freeCompilerArgs.add("-Xallocator=custom")
+            }
+        }
+    }
 
 
     cocoapods {
@@ -64,6 +72,7 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(compose.material3)
                 implementation(compose.ui)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
@@ -135,9 +144,9 @@ kotlin {
             dependsOn(iosMain)
         }
 
-//        val iosSimulatorArm64Main by getting {
-//            dependsOn(iosMain)
-//        }
+        val iosSimulatorArm64Main by getting {
+            dependsOn(iosMain)
+        }
 
 
 

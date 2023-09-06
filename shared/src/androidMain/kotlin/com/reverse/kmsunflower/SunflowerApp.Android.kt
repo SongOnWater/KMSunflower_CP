@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.reverse.kmsunflower.api.UnsplashService
 import com.reverse.kmsunflower.compose.SunflowerApp
+import com.reverse.kmsunflower.compose.SunflowerAppThemed
 import com.reverse.kmsunflower.data.AppDatabase
 import com.reverse.kmsunflower.data.GardenPlantingRepository
 import com.reverse.kmsunflower.data.PlantRepository
@@ -56,7 +57,7 @@ fun SunflowerAppAndroid(
     onShareClick: (String) -> Unit,
     onPhotoClick: (UnsplashPhoto) -> Unit,
 ) {
-    SunflowerApp(
+    SunflowerAppThemed(
         onShareClick = onShareClick,
         onPhotoClick = onPhotoClick,
         galleryViewModel = getGalleryViewModel(owner),

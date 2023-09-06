@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_share_text_plant" translation_description="The default messaged used when sharing a plant on SNS, etc.">Check out the %s plant in the Android Sunflower app</string>
-    <string name="app_name">KMSunflower</string>
 </resources>
