@@ -266,7 +266,7 @@ private fun PlantDetailsContent(
                         }
                         .align(Alignment.End)
                         .padding(end=Dimens.PaddingSmall)
-                        .offset(y= (boxSize.height/6).unaryMinus().dp)
+                        .offset(y= (boxSize.height/(2*LocalDensity.current.density)).unaryMinus().dp)
                         .alpha(contentAlpha())
                 )
             }
