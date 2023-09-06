@@ -21,7 +21,6 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import com.reverse.kmsunflower.SunflowerAppAndroid
 import com.reverse.kmsunflower.android.MyApplication.Companion.database
-import com.reverse.kmsunflower.compose.KMSunflowerTheme
 import com.reverse.kmsunflower.data.UnsplashPhoto
 import com.reverse.kmsunflower.compose.utils.commonConfig
 import com.seiko.imageloader.ImageLoader

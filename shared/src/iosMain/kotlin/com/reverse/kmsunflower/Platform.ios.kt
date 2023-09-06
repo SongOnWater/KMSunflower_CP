@@ -1,15 +1,10 @@
 package com.reverse.kmsunflower
 
-import androidx.compose.runtime.Composable
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.darwin.Darwin
 import platform.UIKit.UIDevice
-import platform.UIKit.UIScreen
-import com.reverse.kmsunflower.utilities.Log
-import platform.UIKit.UIApplication
+
 private class IOSPlatform: Platform {
     companion object{
         private val instance =  IOSPlatform()

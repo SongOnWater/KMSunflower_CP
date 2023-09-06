@@ -29,8 +29,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,13 +38,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.reverse.kmsunflower.MR
-import com.reverse.kmsunflower.compose.card
 import com.reverse.kmsunflower.compose.plantdetail.pluralStringResource
 import com.reverse.kmsunflower.compose.utils.SunflowerImage
 import com.reverse.kmsunflower.compose.utils.dimensionResource
@@ -57,21 +53,6 @@ import com.reverse.kmsunflower.viewmodels.PlantAndGardenPlantingsViewModel
 import dev.icerock.moko.resources.compose.stringResource
 
 
-@Composable
-fun GardenScreen(
-    modifier: Modifier = Modifier,
-    viewModel: GardenPlantingListViewModel,
-    onAddPlantClick: () -> Unit,
-    onPlantClick: (PlantAndGardenPlantings) -> Unit
-) {
-    val gardenPlants by viewModel.plantAndGardenPlantings.collectAsState(initial = emptyList())
-    GardenScreen(
-        gardenPlants = gardenPlants,
-        modifier = modifier,
-        onAddPlantClick = onAddPlantClick,
-        onPlantClick = onPlantClick
-    )
-}
 
 @Composable
 fun GardenScreen(
@@ -118,7 +99,6 @@ private fun GardenList(
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class
 )
 @Composable
 private fun GardenListItem(

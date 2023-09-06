@@ -1,16 +1,12 @@
 package com.reverse.kmsunflower
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.window.ComposeUIViewController
 import platform.UIKit.UIViewController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.DefaultComponentContext
 import androidx.compose.runtime.CompositionLocalProvider
 import io.github.xxfast.decompose.LocalComponentContext
-import com.reverse.kmsunflower.compose.KMSunflowerTheme
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import com.reverse.kmsunflower.data.AppDatabase
 import com.reverse.kmsunflower.data.DatabaseDriverFactory
 import com.reverse.kmsunflower.data.UnsplashPhoto
@@ -32,11 +28,12 @@ import platform.UIKit.UIWindow
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 import com.moriatsushi.insetsx.WindowInsetsUIViewController
+import androidx.compose.ui.window.ComposeUIViewController
 
 import androidx.compose.material.Surface
 @Suppress("FunctionName", "unused")
 fun MainViewController(): UIViewController =
-    WindowInsetsUIViewController {
+    ComposeUIViewController {
         initDatabase()
         val lifecycle = LifecycleRegistry()
         val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)

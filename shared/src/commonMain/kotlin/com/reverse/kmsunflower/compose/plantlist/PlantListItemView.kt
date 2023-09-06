@@ -36,6 +36,7 @@ import com.reverse.kmsunflower.compose.utils.SunflowerImage
 import com.reverse.kmsunflower.compose.utils.dimensionResource
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.data.UnsplashPhoto
+import com.reverse.kmsunflower.ui.md_theme_light_secondaryContainer
 import com.reverse.kmsunflower.utilities.Log
 import com.reverse.kmsunflower.values.SR
 import dev.icerock.moko.resources.compose.stringResource
@@ -53,7 +54,7 @@ fun PhotoListItem(photo: UnsplashPhoto, onClick: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageListItem(name: String, imageUrl: String, onClick: () -> Unit) {
-    val colors=CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+    val  colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     Card(
         onClick = onClick,
         colors = colors,

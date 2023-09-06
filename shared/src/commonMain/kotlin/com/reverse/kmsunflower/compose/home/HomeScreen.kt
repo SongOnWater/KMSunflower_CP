@@ -60,6 +60,7 @@ import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import com.reverse.kmsunflower.compose.garden.GardenScreen
+import com.reverse.kmsunflower.ui.md_theme_light_primary
 import com.reverse.kmsunflower.utilities.Log
 import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 
@@ -146,14 +147,15 @@ fun HomePagerScreen(
         TabRow(selectedTabIndex = pagerState.currentPage) {
             pages.forEachIndexed { index, page ->
                 val title = stringResource(page.titleResId)
+                val selected=  pagerState.currentPage == index
                 Tab(
-                    selected = pagerState.currentPage == index,
+                    selected = selected,
                     onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
                     text = { Text(text = title) },
                     icon = {
                         Icon(
                             painter = painterResource(page.drawableResId),
-                            contentDescription = title
+                            contentDescription = title,
                         )
                     },
                     unselectedContentColor = MaterialTheme.colorScheme.secondary,
