@@ -55,11 +55,11 @@ kotlin {
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "shared"
-            export(libs.moko.resources)
+            //export(libs.moko.resources)
             //export(libs.moko.graphics)
 
-            export(libs.moko.mvvm.core)
-            export(libs.moko.mvvm.livedata)
+            //export(libs.moko.mvvm.core)
+            //export(libs.moko.mvvm.livedata)
         }
         extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
 

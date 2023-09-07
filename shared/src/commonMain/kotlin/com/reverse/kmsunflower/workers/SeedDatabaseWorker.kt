@@ -30,10 +30,10 @@ class SeedDatabaseWorker(
               try {
                   if(!database.plantDao().hasPopulatedData()){
                       //TODO ios not work
-//                      val fileResource  = "json/plants.json"
-//                      val resourceReader=ResourceReader()
-//                      val fileContent=resourceReader.readText(fileResource)
-                      val plantList: List<Plant> = Json.decodeFromString(databaseRawJSONData)
+                      val fileResource  = "json/plants.json"
+                      val resourceReader=ResourceReader()
+                      val fileContent=resourceReader.readText(fileResource)
+                      val plantList: List<Plant> = Json.decodeFromString(fileContent)
                       database.plantDao().insertAll(plantList)
                       Log.i("Done seeding database", null, TAG)
                   }else{

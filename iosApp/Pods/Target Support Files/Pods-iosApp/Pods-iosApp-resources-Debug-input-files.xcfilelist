@@ -1,3 +1,4 @@
 ${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources.sh
+${PODS_ROOT}/../../shared/src/commonMain/resources/compose-resources
 ${PODS_ROOT}/../../shared/src/commonMain/resources/json
 ${PODS_ROOT}/../../shared/src/commonMain/resources/MR

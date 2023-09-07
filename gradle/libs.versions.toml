@@ -1,12 +1,15 @@
 [versions]
+activity-compose = "1.7.2"
+androidx-material = "1.5.1"
+foundation = "1.5.1"
 material = "1.9.0"
 accompanist = "0.28.0"
 gradle-plugin = "1.5.5"
 # arkivanov.parcelize conflict with plugin-kotlin above 1.8.21, so them both should not upgrade untile conflict resolved
 parcelize-gradle-plugin = "0.2.0"
-ktor = "2.3.3"
+ktor = "2.3.4"
 napier = "2.6.1"
-kotlinx-serialization = "1.5.1"
+kotlinx-serialization = "1.6.0"
 android-material = "1.9.0"
 androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
@@ -14,7 +17,7 @@ kotlinx-coroutines = "1.7.3"
 desugar-jdk-libs = "2.0.3"
 plugin-android = "8.1.1"
 plugin-gver = "0.47.0"
-plugin-kotlin = "1.9.0"
+plugin-kotlin = "1.9.10"
 sqldelight-version  = "1.5.5"
 kotlinx-datetime="0.4.0"
 cash-paging="3.1.1-0.3.1"
@@ -34,7 +37,16 @@ decompose-router = "0.3.0"
 kermit = "2.0.0-RC4"
 richeditor-compose="1.0.0-beta02"
 systemuicontroller = "0.30.1"
+ui-tooling-preview = "1.5.1"
+ui-tooling = "1.5.1"
+ui = "1.5.1"
 [libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+androidx-material = { module = "androidx.compose.material:material", version.ref = "androidx-material" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "ui-tooling-preview" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "ui-tooling" }
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 accompanist-themeadapter-material = { module = "com.google.accompanist:accompanist-themeadapter-material", version.ref = "accompanist" }
 
