@@ -7,8 +7,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import io.github.xxfast.decompose.LocalComponentContext
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.reverse.kmsunflower.data.AppDatabase
-import com.reverse.kmsunflower.data.DatabaseDriverFactory
+import com.reverse.kmsunflower.db.DBHelper
 import com.reverse.kmsunflower.data.UnsplashPhoto
 import com.reverse.kmsunflower.compose.utils.commonConfig
 import com.reverse.kmsunflower.workers.SeedDatabaseWorker
@@ -27,14 +26,14 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIWindow
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
-import com.moriatsushi.insetsx.WindowInsetsUIViewController
+import com.reverse.kmsunflower.db.Schema
 import androidx.compose.ui.window.ComposeUIViewController
+import app.cash.sqldelight.driver.native.NativeSqliteDriver
 
-import androidx.compose.material.Surface
 @Suppress("FunctionName", "unused")
 fun MainViewController(): UIViewController =
     ComposeUIViewController {
-        initDatabase()
+        val dbHelper=initDatabase()
         val lifecycle = LifecycleRegistry()
         val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
         CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
@@ -42,6 +41,7 @@ fun MainViewController(): UIViewController =
             ) {
             val ioScope: CoroutineScope = rememberCoroutineScope {  Dispatchers.IO }
             SunflowerAppIOS(
+                dbHelper,
                 onShareClick ={ sharePlant(ioScope,it)},
                 ::openPhotoInBrowser)
         }
@@ -74,10 +74,11 @@ private fun generateImageLoader(): ImageLoader {
          true,
      ).first() as String
  }
-fun initDatabase(){
-    val database= AppDatabase.getInstance(DatabaseDriverFactory(), Dispatchers.Default)
+fun initDatabase():DBHelper{
+    val database= DBHelper.getInstance(NativeSqliteDriver(Schema,"Plants.db"))
     val seedWorker= SeedDatabaseWorker(database)
     seedWorker.doWork()
+    return database
 }
 
  fun sharePlant(ioScope: CoroutineScope ,plant:String){

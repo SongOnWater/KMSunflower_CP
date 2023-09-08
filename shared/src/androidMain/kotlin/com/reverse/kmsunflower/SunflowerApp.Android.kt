@@ -4,9 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.reverse.kmsunflower.api.UnsplashService
-import com.reverse.kmsunflower.compose.SunflowerApp
 import com.reverse.kmsunflower.compose.SunflowerAppThemed
-import com.reverse.kmsunflower.data.AppDatabase
+import com.reverse.kmsunflower.db.DBHelper
 import com.reverse.kmsunflower.data.GardenPlantingRepository
 import com.reverse.kmsunflower.data.PlantRepository
 import com.reverse.kmsunflower.data.UnsplashPhoto
@@ -25,7 +24,7 @@ fun getGalleryViewModel(owner: ViewModelStoreOwner): GalleryViewModel {
     val provider = ViewModelProvider(owner, createViewModelFactory)
     return provider.get(GalleryViewModel::class.java)
 }
-private fun plantListViewModel(owner: ViewModelStoreOwner,database: AppDatabase): PlantListViewModel {
+private fun plantListViewModel(owner: ViewModelStoreOwner,database: DBHelper): PlantListViewModel {
     val createViewModelFactory = createViewModelFactory {
         val plantRepository = PlantRepository.getInstance(database.plantDao())
         PlantListViewModel(plantRepository)
@@ -33,7 +32,7 @@ private fun plantListViewModel(owner: ViewModelStoreOwner,database: AppDatabase)
     val provider = ViewModelProvider(owner, createViewModelFactory)
     return provider.get(PlantListViewModel::class.java)
 }
-private fun gardenPlantingListViewModel(owner: ViewModelStoreOwner,database: AppDatabase): GardenPlantingListViewModel {
+private fun gardenPlantingListViewModel(owner: ViewModelStoreOwner,database: DBHelper): GardenPlantingListViewModel {
     val createViewModelFactory = createViewModelFactory {
         val gardenPlantingRepository = GardenPlantingRepository(database.GardenPlantingDao())
         GardenPlantingListViewModel(gardenPlantingRepository)
@@ -41,7 +40,7 @@ private fun gardenPlantingListViewModel(owner: ViewModelStoreOwner,database: App
     val provider = ViewModelProvider(owner, createViewModelFactory)
     return provider.get(GardenPlantingListViewModel::class.java)
 }
-private fun plantDetailViewModel(owner: ViewModelStoreOwner,database: AppDatabase): PlantDetailViewModel {
+private fun plantDetailViewModel(owner: ViewModelStoreOwner,database: DBHelper): PlantDetailViewModel {
     val createViewModelFactory = createViewModelFactory {
         val plantRepository = PlantRepository.getInstance(database.PlantDao())
         val gardenPlantingRepository = GardenPlantingRepository(database.GardenPlantingDao())
@@ -52,7 +51,7 @@ private fun plantDetailViewModel(owner: ViewModelStoreOwner,database: AppDatabas
 }
 @Composable
 fun SunflowerAppAndroid(
-    database: AppDatabase,
+    database: DBHelper,
     owner: ViewModelStoreOwner,
     onShareClick: (String) -> Unit,
     onPhotoClick: (UnsplashPhoto) -> Unit,

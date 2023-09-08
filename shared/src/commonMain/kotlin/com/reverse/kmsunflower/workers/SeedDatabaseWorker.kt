@@ -15,38 +15,27 @@
  */
 package com.reverse.kmsunflower.workers
 import com.autodesk.coroutineworker.CoroutineWorker
-import com.reverse.kmsunflower.data.AppDatabase
+import com.reverse.kmsunflower.db.DBHelper
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.utilities.Log
-import com.reverse.kmsunflower.values.JSONData.Companion.databaseRawJSONData
 import kotlinx.serialization.json.Json
 
 
 class SeedDatabaseWorker(
-    private val database: AppDatabase
+    private val database: DBHelper
 )  {
       fun doWork() {
           CoroutineWorker.execute {
               try {
-                  if(!database.plantDao().hasPopulatedData()){
-                      //TODO ios not work
                       val fileResource  = "json/plants.json"
                       val resourceReader=ResourceReader()
                       val fileContent=resourceReader.readText(fileResource)
                       val plantList: List<Plant> = Json.decodeFromString(fileContent)
                       database.plantDao().insertAll(plantList)
-                      Log.i("Done seeding database", null, TAG)
-                  }else{
-                      Log.i("Cancel seeded database", null, TAG)
-                  }
+                      Log.i("Done seeding database")
               } catch (ex: Exception) {
-                  Log.e(ex.message.toString(), ex, TAG)
+                  Log.e(ex.message.toString())
               }
           }
-    }
-
-    companion object {
-        private const val TAG = "SeedDatabaseWorker"
-        const val KEY_FILENAME = "plants"
     }
 }

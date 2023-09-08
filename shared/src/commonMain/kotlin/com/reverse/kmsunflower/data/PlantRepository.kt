@@ -16,7 +16,7 @@
 
 package com.reverse.kmsunflower.data
 
-import kotlinx.coroutines.InternalCoroutinesApi
+import com.reverse.kmsunflower.db.DBHelper
 
 /**
  * Repository module for handling data operations.
@@ -25,7 +25,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
  * query execution off of the main thread.
  */
 
-class PlantRepository  private constructor(private val plantDao: AppDatabase.PlantDao) {
+class PlantRepository  private constructor(private val plantDao: DBHelper.PlantDao) {
 
     fun getPlants() = plantDao.getPlants()
 
@@ -36,7 +36,7 @@ class PlantRepository  private constructor(private val plantDao: AppDatabase.Pla
 
     companion object {
         private var instance: PlantRepository? = null
-        fun getInstance(plantDao: AppDatabase.PlantDao):PlantRepository{
+        fun getInstance(plantDao: DBHelper.PlantDao):PlantRepository{
            return  instance ?:PlantRepository(plantDao).also { instance = it }
         }
     }

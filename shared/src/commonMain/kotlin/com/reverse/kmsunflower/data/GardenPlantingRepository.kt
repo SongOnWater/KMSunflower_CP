@@ -16,13 +16,11 @@
 
 package com.reverse.kmsunflower.data
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
+import com.reverse.kmsunflower.db.DBHelper
 
 
 class GardenPlantingRepository (
-    private val gardenPlantingDao: AppDatabase.GardenPlantingDao
+    private val gardenPlantingDao: DBHelper.GardenPlantingDao
 ) {
 
     suspend fun createGardenPlanting(plantId: String) {
@@ -44,7 +42,7 @@ class GardenPlantingRepository (
         // For Singleton instantiation
         private var instance: GardenPlantingRepository? = null
 
-        fun getInstance(gardenPlantingDao: AppDatabase.GardenPlantingDao) =
+        fun getInstance(gardenPlantingDao: DBHelper.GardenPlantingDao) =
             instance ?: GardenPlantingRepository(gardenPlantingDao).also { instance = it }
     }
 }

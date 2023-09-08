@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalView
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext
 import com.reverse.kmsunflower.SunflowerAppAndroid
-import com.reverse.kmsunflower.android.MyApplication.Companion.database
 import com.reverse.kmsunflower.data.UnsplashPhoto
 import com.reverse.kmsunflower.compose.utils.commonConfig
 import com.seiko.imageloader.ImageLoader
@@ -31,12 +30,16 @@ import com.seiko.imageloader.option.androidContext
 import io.github.xxfast.decompose.LocalComponentContext
 import okio.Path.Companion.toOkioPath
 import androidx.core.view.WindowCompat
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.reverse.kmsunflower.db.DBHelper
+import com.reverse.kmsunflower.db.Schema
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+       val database= DBHelper.getInstance(AndroidSqliteDriver(Schema,this,"Plants.db"))
         val rootComponentContext: DefaultComponentContext = defaultComponentContext()
         setContent {
             SetSystemUI()

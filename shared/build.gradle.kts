@@ -7,7 +7,8 @@ plugins {
     id("com.android.library")
 
 
-    id("com.squareup.sqldelight")
+    //id("com.squareup.sqldelight")
+       id("app.cash.sqldelight")
     id("dev.icerock.mobile.multiplatform-resources")
     id("org.jetbrains.compose")
     id("kotlin-parcelize")
@@ -83,8 +84,10 @@ kotlin {
                 implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.kotlinx.serialization.json)
 
-                implementation(libs.sqldelight.runtime)
-                implementation(libs.sqldelight.coroutines)
+//                implementation(libs.sqldelight.runtime)
+//                implementation(libs.sqldelight.coroutines)
+
+                implementation(libs.cash.sqldelight.coroutines)
 
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.coroutines.core)
@@ -115,7 +118,6 @@ kotlin {
                 implementation(libs.richeditor.compose)
                 api(libs.image.loader)
                 implementation(libs.image.loader.extension.moko.resources)
-
             }
         }
 
@@ -124,18 +126,22 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.ktor.client.okhttp)
-                implementation(libs.sqldelight.android.driver)
+                //implementation(libs.sqldelight.android.driver)
                 //implementation(libs.androidx.paging)
                 implementation(libs.cash.paging.compose.common.android)
                 implementation(libs.cash.paging.runtime.composeui.android)
+
+                api(libs.cash.sqldelight.android.driver)
             }
         }
 
         val iosMain by getting {
             dependencies {
                 implementation(libs.ktor.client.ios)
-                implementation(libs.sqldelight.native.driver)
+                //implementation(libs.sqldelight.native.driver)
                 implementation(libs.cash.paging.runtime.uikit)
+
+                implementation(libs.cash.sqldelight.native.driver)
             }
         }
 
@@ -183,7 +189,9 @@ fun getUnsplashAccess(): String? {
     return project.findProperty("unsplash_access_key") as? String
 }
 sqldelight {
-    database("Database") {
-        packageName = "com.reverse.kmsunflower.data"
+    databases {
+        create("Database") {
+            packageName.set("com.reverse.kmsunflower.data")
+        }
     }
 }

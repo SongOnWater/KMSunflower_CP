@@ -6,13 +6,15 @@ buildscript {
     }
     dependencies {
         //classpath(libs.bundles.plugins)
-        classpath (libs.moko.resources.generator)
-        classpath (libs.plugin.kotlin.serialization)
-       classpath (libs.plugin.kotlin)
-        classpath (libs.plugin.gver)
         classpath (libs.plugin.android)
-        classpath (libs.sqldelight.plugin)
+        classpath (libs.plugin.gver)
+        classpath (libs.plugin.kotlin)
+        classpath (libs.plugin.kotlin.serialization)
+        classpath (libs.moko.resources.generator)
         classpath (libs.parcelize.gradle.plugin)
+       // classpath (libs.sqldelight.plugin)
+       classpath (libs.cash.sqldelight.plugin)
+
     }
 
 }
@@ -26,7 +28,7 @@ plugins {
 
     id("com.android.application").version("8.1.0").apply(false)
     id("com.android.library").version("8.1.0").apply(false)
-    id("org.jetbrains.compose").version("1.5.1").apply(false)
+    id("org.jetbrains.compose").version("1.5.0").apply(false)
 }
 
 tasks.register("clean", Delete::class) {

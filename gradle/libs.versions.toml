@@ -17,8 +17,9 @@ kotlinx-coroutines = "1.7.3"
 desugar-jdk-libs = "2.0.3"
 plugin-android = "8.1.1"
 plugin-gver = "0.47.0"
-plugin-kotlin = "1.9.10"
+plugin-kotlin = "1.9.0"
 sqldelight-version  = "1.5.5"
+cash-sqldelight-version  = "2.0.0"
 kotlinx-datetime="0.4.0"
 cash-paging="3.1.1-0.3.1"
 cash-paging-runtime="3.1.1-0.1.1"
@@ -79,8 +80,15 @@ desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref 
 sqldelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight-version" }
 sqldelight-android-driver = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight-version" }
 sqldelight-native-driver = { module = "com.squareup.sqldelight:native-driver", version.ref = "sqldelight-version" }
-sqldelight-plugin = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight-version" }
+#sqldelight-plugin = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight-version" }
 sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqldelight-version" }
+
+cash-sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "cash-sqldelight-version" }
+cash-sqldelight-plugin = { group = "app.cash.sqldelight",name = "gradle-plugin", version.ref = "cash-sqldelight-version" }
+cash-sqldelight-android-driver= { group = "app.cash.sqldelight",name = "android-driver", version.ref = "cash-sqldelight-version" }
+cash-sqldelight-native-driver= { group = "app.cash.sqldelight",name = "native-driver", version.ref = "cash-sqldelight-version" }
+cash-sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "cash-sqldelight-version" }
+
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
@@ -132,5 +140,8 @@ plugins = [
     "plugin-gver",
     "plugin-kotlin",
     "plugin-kotlin-serialization",
-    "sqldelight-plugin"
+    "moko-resources-generator",
+    "parcelize-gradle-plugin",
+#    "sqldelight-plugin",
+    "cash-sqldelight-plugin"
 ]

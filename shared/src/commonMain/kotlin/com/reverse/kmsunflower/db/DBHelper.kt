@@ -1,29 +1,27 @@
-package com.reverse.kmsunflower.data
+package com.reverse.kmsunflower.db
 
+import com.reverse.kmsunflower.data.Database
+import com.reverse.kmsunflower.data.GardenPlanting
+import com.reverse.kmsunflower.data.Plant
+import com.reverse.kmsunflower.data.PlantAndGardenPlantings
 import com.reverse.kmsunflower.helpers.transactionWithContext
-import com.reverse.kmsunflower.utilities.Log
-import com.reverse.kmsunflower.workers.SeedDatabaseWorker
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.db.SqlDriver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.internal.synchronized
-import kotlinx.datetime.LocalDate
 import kotlin.native.concurrent.ThreadLocal
 
 
-class AppDatabase private constructor(
-    databaseDriverFactory: DatabaseDriverFactory,
+class DBHelper private constructor(
+    driver: SqlDriver,
     private val backgroundDispatcher: CoroutineDispatcher
 ) {
 
-    private val database = Database(databaseDriverFactory.createDriver())
+    private val database = Database(driver)
     private val plantQueries = database.plantQueries
     private val gardenPlantingsQueries = database.gardenPlantingQueries
     private val plantDao = PlantDao()
@@ -31,9 +29,9 @@ class AppDatabase private constructor(
 
     @ThreadLocal
     companion object {
-        private var instance: AppDatabase? = null
-        fun getInstance(databaseDriverFactory: DatabaseDriverFactory,backgroundDispatcher: CoroutineDispatcher): AppDatabase {
-            return instance ?: AppDatabase(databaseDriverFactory,backgroundDispatcher).also {
+        private var instance: DBHelper? = null
+        fun getInstance(driver: SqlDriver, backgroundDispatcher: CoroutineDispatcher = Dispatchers.Default): DBHelper {
+            return instance ?: DBHelper(driver,backgroundDispatcher).also {
                 instance = it
             }
         }
@@ -51,7 +49,7 @@ class AppDatabase private constructor(
             val plantList=rawPlants.executeAsList()
              val  tPlantList = plantList.map {
                     pt ->
-                Plant.getFromPlantTable(pt)
+                 Plant.getFromPlantTable(pt)
             }
             return flowOf(tPlantList).flowOn(backgroundDispatcher)
         }
