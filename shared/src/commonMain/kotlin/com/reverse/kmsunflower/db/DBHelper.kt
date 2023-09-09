@@ -9,7 +9,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.db.SqlDriver
+import com.reverse.kmsunflower.utilities.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -39,20 +42,28 @@ class DBHelper private constructor(
 
 
     inner class PlantDao {
+        private val refreshTrigger = MutableStateFlow(false)
 
         fun hasPopulatedData(): Boolean {
             return plantQueries.getPlantsCount().executeAsOne() != 0L
         }
 
-        fun getPlants(): Flow<List<Plant>> {
-            val rawPlants=plantQueries.getPlants()
-            val plantList=rawPlants.executeAsList()
-             val  tPlantList = plantList.map {
-                    pt ->
-                 Plant.getFromPlantTable(pt)
-            }
-            return flowOf(tPlantList).flowOn(backgroundDispatcher)
+        fun refreshPlants() {
+            refreshTrigger.value= !refreshTrigger.value
         }
+
+        fun getPlants(): Flow<List<Plant>> {
+            return refreshTrigger.flatMapLatest {
+                val rawPlants = plantQueries.getPlants()
+                val plantList = rawPlants.executeAsList()
+                val tPlantList = plantList.map { pt ->
+                    Plant.getFromPlantTable(pt)
+                }
+                Log.i("PlantDao::getPlants() tPlantList.size:${tPlantList.size}")
+                flowOf(tPlantList)
+            }.flowOn(backgroundDispatcher)
+        }
+
 
         fun getPlantsWithGrowZoneNumber(growZoneNumber: Int): Flow<List<Plant>> {
             return plantQueries.getPlantsWithGrowZoneNumber(growZoneNumber.toLong()).asFlow().map {
@@ -68,7 +79,7 @@ class DBHelper private constructor(
             }
         }
 
-        suspend fun insertAll(plants: List<Plant>) {
+         suspend fun insertAll(plants: List<Plant>) {
             database.transactionWithContext(backgroundDispatcher){
                 plants.forEach {
                     plantQueries.insertPlant(
@@ -80,6 +91,7 @@ class DBHelper private constructor(
                         it.imageUrl
                     )
                 }
+                Log.i ("PlantDao::insertAll()")
             }
         }
 

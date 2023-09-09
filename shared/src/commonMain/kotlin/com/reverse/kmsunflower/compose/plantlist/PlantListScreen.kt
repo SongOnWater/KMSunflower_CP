@@ -29,6 +29,7 @@ import com.reverse.kmsunflower.compose.utils.dimensionResource
 import com.reverse.kmsunflower.data.Plant
 import com.reverse.kmsunflower.values.SR
 import com.reverse.kmsunflower.viewmodels.PlantListViewModel
+import dev.icerock.moko.mvvm.livedata.compose.observeAsState
 
 
 //@Composable
@@ -43,10 +44,16 @@ import com.reverse.kmsunflower.viewmodels.PlantListViewModel
 
 @Composable
 fun PlantListScreen(
-    plants: List<Plant>,
+    plantListViewModel: PlantListViewModel,
     modifier: Modifier = Modifier,
     onPlantClick: (Plant) -> Unit = {},
 ) {
+
+    val plants by plantListViewModel.plants.observeAsState()
+
+    if(plants.isEmpty()){
+        plantListViewModel.refreshPlants()
+    }
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier.testTag("plant_list"),

@@ -33,7 +33,8 @@ import app.cash.sqldelight.driver.native.NativeSqliteDriver
 @Suppress("FunctionName", "unused")
 fun MainViewController(): UIViewController =
     ComposeUIViewController {
-        val dbHelper=initDatabase()
+        //val database= DBHelper.getInstance(NativeSqliteDriver(Schema,"Plants.db",100))
+        val database= initDatabase()
         val lifecycle = LifecycleRegistry()
         val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
         CompositionLocalProvider(LocalComponentContext provides rootComponentContext,
@@ -41,7 +42,7 @@ fun MainViewController(): UIViewController =
             ) {
             val ioScope: CoroutineScope = rememberCoroutineScope {  Dispatchers.IO }
             SunflowerAppIOS(
-                dbHelper,
+                database,
                 onShareClick ={ sharePlant(ioScope,it)},
                 ::openPhotoInBrowser)
         }
@@ -75,9 +76,11 @@ private fun generateImageLoader(): ImageLoader {
      ).first() as String
  }
 fun initDatabase():DBHelper{
-    val database= DBHelper.getInstance(NativeSqliteDriver(Schema,"Plants.db"))
-    val seedWorker= SeedDatabaseWorker(database)
-    seedWorker.doWork()
+    val database= DBHelper.getInstance(NativeSqliteDriver(Schema,"Plants.db",100))
+    if(!database.PlantDao().hasPopulatedData()){
+        val seedWorker=SeedDatabaseWorker(database)
+        seedWorker.doWork()
+    }
     return database
 }
 

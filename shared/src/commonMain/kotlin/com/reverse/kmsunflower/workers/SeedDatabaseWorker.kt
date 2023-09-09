@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.reverse.kmsunflower.workers
+
 import com.autodesk.coroutineworker.CoroutineWorker
 import com.reverse.kmsunflower.db.DBHelper
 import com.reverse.kmsunflower.data.Plant
@@ -23,19 +24,19 @@ import kotlinx.serialization.json.Json
 
 class SeedDatabaseWorker(
     private val database: DBHelper
-)  {
-      fun doWork() {
-          CoroutineWorker.execute {
-              try {
-                      val fileResource  = "json/plants.json"
-                      val resourceReader=ResourceReader()
-                      val fileContent=resourceReader.readText(fileResource)
-                      val plantList: List<Plant> = Json.decodeFromString(fileContent)
-                      database.plantDao().insertAll(plantList)
-                      Log.i("Done seeding database")
-              } catch (ex: Exception) {
-                  Log.e(ex.message.toString())
-              }
-          }
+) {
+    fun doWork() {
+        CoroutineWorker.execute {
+            try {
+                val fileResource = "json/plants.json"
+                val resourceReader = ResourceReader()
+                val fileContent = resourceReader.readText(fileResource)
+                val plantList: List<Plant> = Json.decodeFromString(fileContent)
+                 database.plantDao().insertAll(plantList)
+                Log.i("SeedDatabaseWorker::doWork()")
+            } catch (ex: Exception) {
+                Log.e(ex.message.toString())
+            }
+        }
     }
 }

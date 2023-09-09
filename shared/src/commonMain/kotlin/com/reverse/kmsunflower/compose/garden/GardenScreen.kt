@@ -56,11 +56,13 @@ import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun GardenScreen(
-    gardenPlants: List<PlantAndGardenPlantings>,
+    gardenPlantingListViewModel: GardenPlantingListViewModel,
     modifier: Modifier = Modifier,
     onAddPlantClick: () -> Unit = {},
     onPlantClick: (PlantAndGardenPlantings) -> Unit = {}
 ) {
+    val gardenPlants by gardenPlantingListViewModel.plantAndGardenPlantings.collectAsState(initial = emptyList())
+
     if (gardenPlants.isEmpty()) {
         EmptyGarden(onAddPlantClick, modifier)
     } else {

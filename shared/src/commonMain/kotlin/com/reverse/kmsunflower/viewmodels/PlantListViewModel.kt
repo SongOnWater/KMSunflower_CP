@@ -97,7 +97,9 @@ class PlantListViewModel   constructor(
         }
     }.asLiveData(viewModelScope, emptyList())
 
-
+    fun refreshPlants(){
+        plantRepository.refreshPlants()
+    }
 
     fun updateData() {
         if (isFiltered()) {

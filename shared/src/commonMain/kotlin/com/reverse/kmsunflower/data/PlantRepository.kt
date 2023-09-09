@@ -27,6 +27,8 @@ import com.reverse.kmsunflower.db.DBHelper
 
 class PlantRepository  private constructor(private val plantDao: DBHelper.PlantDao) {
 
+    fun refreshPlants()=plantDao.refreshPlants()
+
     fun getPlants() = plantDao.getPlants()
 
     fun getPlant(plantId: String) = plantDao.getPlant(plantId)

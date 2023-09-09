@@ -107,6 +107,8 @@ fun HomeScreen(
 
 }
 
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomePagerScreen(
@@ -117,30 +119,7 @@ fun HomePagerScreen(
     plantListViewModel: PlantListViewModel,
     pagerState: PagerState
 ) {
-    val gardenPlants by gardenPlantingListViewModel.plantAndGardenPlantings.collectAsState(initial = emptyList())
-    val plants by plantListViewModel.plants.observeAsState()
-    //val stateFlowPlants by flowPlants.collectAsState(initial = emptyList())
-    HomePagerScreen(
-        onPlantClick = onPlantClick,
-        modifier = modifier,
-        pages = pages,
-        gardenPlants = gardenPlants,
-        plants = plants,
-        pagerState = pagerState
 
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun HomePagerScreen(
-    onPlantClick: (Plant) -> Unit,
-    modifier: Modifier = Modifier,
-    pages: Array<SunflowerPage> = SunflowerPage.values(),
-    gardenPlants: List<PlantAndGardenPlantings>,
-    plants: List<Plant>,
-    pagerState: PagerState
-) {
     Column (modifier){
         val coroutineScope = rememberCoroutineScope()
         // Tab Row
@@ -172,7 +151,7 @@ fun HomePagerScreen(
             when (pages[index]) {
                 SunflowerPage.MY_GARDEN -> {
                     GardenScreen(
-                        gardenPlants = gardenPlants,
+                        gardenPlantingListViewModel = gardenPlantingListViewModel,
                         modifier = Modifier.fillMaxSize(),
                         onAddPlantClick = {
                             coroutineScope.launch {
@@ -186,7 +165,7 @@ fun HomePagerScreen(
 
                 SunflowerPage.PLANT_LIST -> {
                     PlantListScreen(
-                        plants = plants,
+                        plantListViewModel = plantListViewModel,
                         onPlantClick = onPlantClick,
                         modifier = Modifier.fillMaxSize(),
                     )

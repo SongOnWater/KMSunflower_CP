@@ -9,9 +9,10 @@ import com.reverse.kmsunflower.workers.SeedDatabaseWorker
 
 object Schema : SqlSchema<QueryResult.Value<Unit>> by Database.Schema{
     override fun create(driver: SqlDriver): QueryResult.Value<Unit>{
-        Log.i("Schema create()")
+        Log.i("Schema::create()")
         Database.Schema.create(driver)
-        val seedWorker= SeedDatabaseWorker(DBHelper.getInstance(driver))
+        val dbHelper=DBHelper.getInstance(driver)
+        val seedWorker= SeedDatabaseWorker(dbHelper)
         seedWorker.doWork()
         return QueryResult.Unit
     }
