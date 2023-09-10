@@ -20,15 +20,15 @@ buildscript {
 }
 plugins {
     //trick: for the same plugin versions in all sub-modules
-    val kotlnVersion = "1.9.0"
+    val kotlinVersion = "1.9.10"
 
-    kotlin("jvm").version(kotlnVersion).apply(false)
-    kotlin("android").version(kotlnVersion).apply(false)
-    kotlin("multiplatform").version(kotlnVersion).apply(false)
+    kotlin("jvm").version(kotlinVersion).apply(false)
+    kotlin("android").version(kotlinVersion).apply(false)
+    kotlin("multiplatform").version(kotlinVersion).apply(false)
 
     id("com.android.application").version("8.1.0").apply(false)
     id("com.android.library").version("8.1.0").apply(false)
-    id("org.jetbrains.compose").version("1.5.0").apply(false)
+    id("org.jetbrains.compose").version("1.5.1").apply(false)
 }
 
 tasks.register("clean", Delete::class) {
