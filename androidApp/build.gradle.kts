@@ -58,6 +58,5 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.themeadapter.material)
     //implementation(libs.moko.mvvm.compose)
 }

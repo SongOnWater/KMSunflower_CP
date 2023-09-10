@@ -3,22 +3,18 @@ activity-compose = "1.7.2"
 androidx-material = "1.5.1"
 foundation = "1.5.1"
 material = "1.9.0"
-accompanist = "0.28.0"
-gradle-plugin = "1.5.5"
-# arkivanov.parcelize conflict with plugin-kotlin above 1.8.21, so them both should not upgrade untile conflict resolved
+
 parcelize-gradle-plugin = "0.2.0"
 ktor = "2.3.4"
 napier = "2.6.1"
 kotlinx-serialization = "1.6.0"
 android-material = "1.9.0"
 androidx-appcompat = "1.6.1"
-androidx-constraintlayout = "2.1.4"
 kotlinx-coroutines = "1.7.3"
 desugar-jdk-libs = "2.0.3"
 plugin-android = "8.1.1"
 plugin-gver = "0.47.0"
-plugin-kotlin = "1.9.1"
-sqldelight-version  = "1.5.5"
+plugin-kotlin = "1.9.10"
 cash-sqldelight-version  = "2.0.0"
 kotlinx-datetime="0.4.0"
 cash-paging="3.1.1-0.3.1"
@@ -49,9 +45,7 @@ androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "ui-tooling" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
-accompanist-themeadapter-material = { module = "com.google.accompanist:accompanist-themeadapter-material", version.ref = "accompanist" }
 
-gradle-plugin-1_5_5 = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "gradle-plugin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 
@@ -68,7 +62,6 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 #android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
-androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 
 plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
 plugin-gver = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "plugin-gver" }
@@ -77,11 +70,6 @@ plugin-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serializat
 
 desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 
-sqldelight-runtime = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight-version" }
-sqldelight-android-driver = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight-version" }
-sqldelight-native-driver = { module = "com.squareup.sqldelight:native-driver", version.ref = "sqldelight-version" }
-#sqldelight-plugin = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight-version" }
-sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqldelight-version" }
 
 cash-sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "cash-sqldelight-version" }
 cash-sqldelight-plugin = { group = "app.cash.sqldelight",name = "gradle-plugin", version.ref = "cash-sqldelight-version" }
@@ -128,12 +116,10 @@ kermit = { group = "co.touchlab", name= "kermit", version.ref = "kermit" }
 richeditor-compose = { group = "com.mohamedrejeb.richeditor", name = "richeditor-compose", version.ref = "richeditor-compose" }
 insetsx = { group = "com.moriatsushi.insetsx", name = "insetsx", version = "0.1.0-alpha10" }
 
-androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version = "3.2.0" }
-androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version = "1.6.0" }
+
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "systemuicontroller" }
 
-#androidx-paging= { module = "androidx.paging:paging-runtime", version.ref = "paging-version" }
-#androidx-paging-common-ktx = { group = "androidx.paging", name = "paging-common-ktx", version.ref = "paging-version" }
+
 [bundles]
 plugins = [
     "plugin-android",
