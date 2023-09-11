@@ -371,7 +371,7 @@ There are some gists in above code:
 3. Calendar From Android converse to LocalDate. 
 ## assets Vs resource
 Android sparates "assets" and "res" with defining "assets" as raw materal accessed by path and IO ,  "res" defined as values accessed by ID. Moko resource offers API used to access some of "res" as on Android. And  "compose.components.resources" offer API to access "assets".(But version 1.5.1  has a middle path issue ["compose-resources"](https://github.com/JetBrains/compose-multiplatform/issues/3637) on iOS).
-For "res", there are some magics:
+For "res", there are some tricks:
 1. Moko resource can only deal SVG, so we should convert Android drawables into SVG files.
 2. Actually we could use ChatGPT to convert some valuses defined in XML file into kotlin values, by telling ChatGPT the convert rules with converting example.  
 Android code:
@@ -412,7 +412,6 @@ class SeedDatabaseWorker(
 }
  ```
 multiplatform code:
-
  ```kotlin
 class ResourceReader {
    @OptIn(ExperimentalResourceApi::class)
@@ -442,5 +441,446 @@ class SeedDatabaseWorker(
 The above code fetches Json string from a file in "assets", then parse the Json string into a  list of entities, and insert the entities into the database as inital data. There ares some pionts :
  1. CoroutineWorker of Android and Multiplatform.
  2. Json of Android and Multiplatform.
+### Data Seeding
+For Android Room has **RoomDatabase.Callback** to seed intial data into database, and Room also helps you deal the synchronization issues of quering while seeding immediately. Even thought We can seed data in Sqldelight in Schema::Create(), but the seeding not yet has been saw while doing query. So I add a mechanism to refresh the data passed through viewmodel.
+```kotlin
+inner class PlantDao {
+    private val refreshTrigger = MutableStateFlow(false)
+    fun hasPopulatedData(): Boolean {
+        return plantQueries.getPlantsCount().executeAsOne() != 0L
+    }
+    
+    fun refreshPlants() {
+        refreshTrigger.value = !refreshTrigger.value
+    }
+    
+    fun getPlants(): Flow<List<Plant>> {
+        return refreshTrigger.flatMapLatest {
+            val rawPlants = plantQueries.getPlants()
+            val plantList = rawPlants.executeAsList()
+            val tPlantList = plantList.map { pt ->
+                Plant.getFromPlantTable(pt)
+            }
+            Log.i("PlantDao::getPlants() tPlantList.size:${tPlantList.size}")
+            flowOf(tPlantList)
+        }.flowOn(backgroundDispatcher)
+    }
+}
+class PlantRepository{
+    fun refreshPlants()=plantDao.refreshPlants()
+}
+class PlantListViewModel{
+    plantRepository.refreshPlants()
+}
+@Composable
+fun PlantListScreen(
+    plantListViewModel: PlantListViewModel,
+    modifier: Modifier = Modifier,
+    onPlantClick: (Plant) -> Unit = {},
+) {
+
+    val plants by plantListViewModel.plants.observeAsState()
+
+    if(plants.isEmpty()){
+        plantListViewModel.refreshPlants()
+    }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier.testTag("plant_list"),
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(id = SR.dimen.card_side_margin),
+            vertical = dimensionResource(id = SR.dimen.header_margin)
+        )
+    ) {
+        items(
+            items = plants,
+            key = { it.plantId }
+        ) { plant ->
+            PlantListItem(plant = plant) {
+                onPlantClick(plant)
+            }
+        }
+    }
+}
+```
 ## MVVM 
-As DAOs and entities already, the respositories and viewmodels will be easy to migration.   
+As DAOs and entities already, the respositories 、 viewmodels and pagings will be easy to migration.  But as without Hilter for multiplatform, we should init the viewmodels mannually.  
+multiplatform code:
+```kotlin
+fun getGalleryViewModel(owner: ViewModelStoreOwner): GalleryViewModel {
+    val createViewModelFactory = createViewModelFactory {
+        val unsplashRepository = UnsplashRepository(UnsplashService.create())
+        GalleryViewModel(unsplashRepository)
+    }
+    val provider = ViewModelProvider(owner, createViewModelFactory)
+    return provider.get(GalleryViewModel::class.java)
+}
+private fun plantListViewModel(owner: ViewModelStoreOwner,database: DBHelper): PlantListViewModel {
+    val createViewModelFactory = createViewModelFactory {
+        val plantRepository = PlantRepository.getInstance(database.plantDao())
+        PlantListViewModel(plantRepository)
+    }
+    val provider = ViewModelProvider(owner, createViewModelFactory)
+    return provider.get(PlantListViewModel::class.java)
+}
+private fun gardenPlantingListViewModel(owner: ViewModelStoreOwner,database: DBHelper): GardenPlantingListViewModel {
+    val createViewModelFactory = createViewModelFactory {
+        val gardenPlantingRepository = GardenPlantingRepository(database.GardenPlantingDao())
+        GardenPlantingListViewModel(gardenPlantingRepository)
+    }
+    val provider = ViewModelProvider(owner, createViewModelFactory)
+    return provider.get(GardenPlantingListViewModel::class.java)
+}
+private fun plantDetailViewModel(owner: ViewModelStoreOwner,database: DBHelper): PlantDetailViewModel {
+    val createViewModelFactory = createViewModelFactory {
+        val plantRepository = PlantRepository.getInstance(database.PlantDao())
+        val gardenPlantingRepository = GardenPlantingRepository(database.GardenPlantingDao())
+        PlantDetailViewModel(plantRepository, gardenPlantingRepository)
+    }
+    val provider = ViewModelProvider(owner, createViewModelFactory)
+    return provider.get(PlantDetailViewModel::class.java)
+}
+```
+## Composable Views
+With Compose Multiplatform , the most of the Android Composables adapter multiplatform easily, except the following positions:
+1. **Navigation**, Android offers  Navigation and Parameters through it, but mulitplatform has no offical Navigtion framework, so there is third-party navigation decompose-router library.
+Android code:
+```kotlin
+@Composable
+fun SunflowerApp() {
+    val navController = rememberNavController()
+    SunFlowerNavHost(
+        navController = navController
+    )
+}
+
+@Composable
+fun SunFlowerNavHost(
+    navController: NavHostController
+) {
+    val activity = (LocalContext.current as Activity)
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") {
+            HomeScreen(
+                onPlantClick = {
+                    navController.navigate("plantDetail/${it.plantId}")
+                }
+            )
+        }
+        composable(
+            "plantDetail/{plantId}",
+            arguments = listOf(navArgument("plantId") {
+                type = NavType.StringType
+            })
+        ) {
+            PlantDetailsScreen(
+                onBackClick = { navController.navigateUp() },
+                onShareClick = {
+                    createShareIntent(activity, it)
+                },
+                onGalleryClick = {
+                    navController.navigate("gallery/${it.name}")
+                }
+            )
+        }
+        composable(
+            "gallery/{plantName}",
+            arguments = listOf(navArgument("plantName") {
+                type = NavType.StringType
+            })
+        ) {
+            GalleryScreen(
+                onPhotoClick = {
+                    val uri = Uri.parse(it.user.attributionUrl)
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    activity.startActivity(intent)
+                },
+                onUpClick = {
+                    navController.navigateUp()
+                })
+        }
+    }
+}
+```
+multiplatform code:
+```kotlin
+@Parcelize
+sealed class SunflowerScreen : Parcelable {
+    @Parcelize
+    object Home : SunflowerScreen()
+    @Parcelize
+    data class PlantDetail(val plantId: String) : SunflowerScreen()
+    @Parcelize
+    data class Gallery(val plantName: String) : SunflowerScreen()
+}
+@Composable
+fun SunflowerApp(
+    onShareClick: (String) -> Unit,
+    onPhotoClick: (UnsplashPhoto) -> Unit,
+    galleryViewModel: GalleryViewModel,
+    plantListViewModel: PlantListViewModel,
+    gardenPlantingListViewModel: GardenPlantingListViewModel,
+    plantDetailsViewModel:PlantDetailViewModel,
+) {
+
+    val router = rememberRouter(
+        type = SunflowerScreen::class,
+        stack = listOf(SunflowerScreen.Home)
+    )
+    RoutedContent(router = router) { page ->
+        when (page) {
+            is SunflowerScreen.Home -> HomeScreen(
+                onPlantClick = { router.push(SunflowerScreen.PlantDetail(it.plantId)) },
+                plantListViewModel = plantListViewModel ,
+                gardenPlantingListViewModel= gardenPlantingListViewModel
+            )
+            is SunflowerScreen.PlantDetail -> {
+                PlantDetailsScreen(
+                    plantId=page.plantId,
+                    plantDetailsViewModel= plantDetailsViewModel,
+                    onBackClick = { router.pop() },
+                    onShareClick=onShareClick,
+                    onGalleryClick = { router.push(SunflowerScreen.Gallery(it.name)) }
+                )
+            }
+            is SunflowerScreen.Gallery -> GalleryScreen(
+                plantName=page.plantName ,
+                galleryViewModel=galleryViewModel,
+                onPhotoClick = onPhotoClick,
+                onUpClick = { router.pop() }
+            )
+        }
+    }
+}
+```
+Above router logic should be wrapped by 'CompositionLocalProvider(LocalComponentContext provides rootComponentContext)' from plantform specific code which offers a LocalComponentContext. 
+2. **ConstraintLayout**, Android offers both View and Composable ConstraintLayout API, but multiplatform has no such feature. But after analysising the code actually, there is no need to use ConstraintLayout to implements the layouts. 
+Android code:
+```kotlin
+@Composable
+private fun PlantDetailsContent(
+    scrollState: ScrollState,
+    toolbarState: ToolbarState,
+    plant: Plant,
+    isPlanted: Boolean,
+    hasValidUnsplashKey: Boolean,
+    imageHeight: Dp,
+    onNamePosition: (Float) -> Unit,
+    onFabClick: () -> Unit,
+    onGalleryClick: () -> Unit,
+    contentAlpha: () -> Float,
+) {
+    Column(Modifier.verticalScroll(scrollState)) {
+        ConstraintLayout {
+            val (image, fab, info) = createRefs()
+
+            PlantImage(
+                imageUrl = plant.imageUrl,
+                imageHeight = imageHeight,
+                modifier = Modifier
+                    .constrainAs(image) { top.linkTo(parent.top) }
+                    .alpha(contentAlpha())
+            )
+
+            if (!isPlanted) {
+                val fabEndMargin = Dimens.PaddingSmall
+                PlantFab(
+                    onFabClick = onFabClick,
+                    modifier = Modifier
+                        .constrainAs(fab) {
+                            centerAround(image.bottom)
+                            absoluteRight.linkTo(
+                                parent.absoluteRight,
+                                margin = fabEndMargin
+                            )
+                        }
+                        .alpha(contentAlpha())
+                )
+            }
+
+            PlantInformation(
+                name = plant.name,
+                wateringInterval = plant.wateringInterval,
+                description = plant.description,
+                hasValidUnsplashKey = hasValidUnsplashKey,
+                onNamePosition = { onNamePosition(it) },
+                toolbarState = toolbarState,
+                onGalleryClick = onGalleryClick,
+                modifier = Modifier.constrainAs(info) {
+                    top.linkTo(image.bottom)
+                }
+            )
+        }
+    }
+}
+```
+multiplatform code:
+```kotlin
+@Composable
+private fun PlantDetailsContent(
+    scrollState: ScrollState,
+    toolbarState: ToolbarState,
+    plant: Plant,
+    isPlanted: Boolean,
+    hasValidUnsplashKey: Boolean,
+    imageHeight: Dp,
+    onNamePosition: (Float) -> Unit,
+    onFabClick: () -> Unit,
+    onGalleryClick: () -> Unit,
+    contentAlpha: () -> Float,
+) {
+    Column(Modifier.verticalScroll(scrollState).fillMaxWidth()) {
+            PlantImage(
+                imageUrl = plant.imageUrl,
+                imageHeight = imageHeight,
+                modifier = Modifier
+                    .alpha(contentAlpha())
+            )
+            if (!isPlanted) {
+                var boxSize by remember { mutableStateOf(IntSize.Zero) }
+                PlantFab(
+                    onFabClick = onFabClick,
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            boxSize = coordinates.size
+                        }
+                        .align(Alignment.End)
+                        .padding(end=Dimens.PaddingSmall)
+                        .offset(y= (boxSize.height/(2*LocalDensity.current.density)).unaryMinus().dp)
+                        .alpha(contentAlpha())
+                )
+            }
+
+            PlantInformation(
+                name = plant.name,
+                wateringInterval = plant.wateringInterval.toInt(),
+                description = plant.description,
+                hasValidUnsplashKey = hasValidUnsplashKey,
+                onNamePosition = { onNamePosition(it) },
+                toolbarState = toolbarState,
+                onGalleryClick = onGalleryClick
+            )
+
+    }
+}
+```
+The key points to get ride of the ConstraintLayout is that using **onGloballyPositioned** and **offset** to layout the target view upward half of its hight.
+3. **HTML**, Android Text can render HTML as rich text. But offical Multiplatform has no such feature, so I use a third-party library [Compose-Rich-Editor](https://github.com/MohamedRejeb/Compose-Rich-Editor) 
+Android code:
+```kotlin
+@Composable
+private fun PlantDescription(description: String) {
+    // This remains using AndroidViewBinding because this feature is not in Compose yet
+    AndroidViewBinding(ItemPlantDescriptionBinding::inflate) {
+        plantDescription.text = HtmlCompat.fromHtml(
+            description,
+            HtmlCompat.FROM_HTML_MODE_COMPACT
+        )
+        plantDescription.movementMethod = LinkMovementMethod.getInstance()
+        plantDescription.linksClickable = true
+    }
+}
+```
+multiplatform code:
+```kotlin
+@OptIn(ExperimentalRichTextApi::class)
+@Composable
+private fun PlantDescription(description: String) {
+
+    val richTextState = rememberRichTextState().apply {
+        setHtml(description)
+        setConfig(
+            linkColor = MaterialTheme.colorScheme.primary
+        )
+    }
+    RichText(
+       state = richTextState,
+        modifier = Modifier.padding(bottom = Dimens.PaddingLargeX)
+   )
+}
+```
+Note: 'Modifier.padding(bottom = Dimens.PaddingLargeX)' should not be missed, it is the answer to ' android:paddingBottom="@dimen/padding_large" ' on Android, or the scrolling effect will not work well. 
+## Image
+There are lots of image loading libraries for Android, such as Glide, some of them even have composable versions,but they don't support multiplanform currently. There is one image loading [compose-imageloader](https://github.com/qdsfdhvh/compose-imageloader) library supporting KMP and it seems the best choice currently.  
+Android code:
+```kotlin
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun SunflowerImage(
+    model: Any?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    requestBuilderTransform: RequestBuilderTransform<Drawable> = { it },
+) {
+    if (LocalInspectionMode.current) {
+        Box(modifier = modifier.background(Color.Magenta))
+        return
+    }
+    GlideImage(
+        model = model,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        alignment = alignment,
+        contentScale = contentScale,
+        alpha = alpha,
+        colorFilter = colorFilter,
+        requestBuilderTransform = requestBuilderTransform,
+        loading = placeholder {
+            Box(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(Modifier.size(40.dp))
+            }
+        }
+    )
+}
+```
+multiplatform code:
+```kotlin
+@Composable
+fun SunflowerImage(
+    model: Any?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null
+) {
+    var boxSize by remember { mutableStateOf(Size.Zero) }
+    val density = LocalDensity.current.density
+    Box(Modifier.onGloballyPositioned { coordinates ->
+        boxSize = coordinates.size.toSize()
+    }, Alignment.Center) {
+        val request = remember(model) {
+            ImageRequest {
+                data(model)
+                scale(Scale.FIT)
+                addInterceptor(NullDataInterceptor)
+                options {
+                    maxImageSize = (boxSize.width.toInt()* density).toInt()
+                }
+            }
+        }
+        val action by rememberImageAction(request)
+        val painter = rememberImageActionPainter(action)
+        Image(
+            painter = painter,
+            contentDescription = contentDescription,
+            modifier = modifier,
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha,
+            colorFilter = colorFilter
+        )
+    }
+}
+```
+Note: 'maxImageSize = (boxSize.width.toInt()* density).toInt()' this line is for loading big size image on iOS. Without the line the memory will be drained soon then causes a crash. This line has set the width of view used show the image as the "maxImageSize" to scale down its size while loading big images. 
+## Conclusion
+As Kotlin Multiplatform and Compose Multiplatform has implemented the multiplatform feature for the lower layer programming language and higher layer of Composable views separately, the main work for migration is the replacement of middle layer of components and third-party libraries. But the components and libraries supporting multiplatform may have many differents for their peers on Android. So the ideal situation is when the major components and libraries are able to support multiplatform, then do the migration for your Android code. 
+If your App is developed from scratch, using multiplatform maybe a reasonable choice. But you could face losts uncertainty, as you are using a new framework and being a newbie. 
+The advantages of Kotlin Multiplatform and Compose Multiplatform is that if you are an Android developer, you do not need to learn a new language and APIs of a new platform. But your experience on Android, especially on the third-party libraries will not match. So maybe KMP/CMP is relatively an easier way to wade into Multiplatform area. 
+Compared with other multiplatform technologies, such as Flutter, React Native, KMP/CMP is still immature. So how to convice developers to adapt it is an big issue. Also like other  multiplatform technologies, it is inevitable to deal with platform specific problems, so developers  have to learn some platform specific knowledges, that seems like a paradox.  
