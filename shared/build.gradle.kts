@@ -17,7 +17,7 @@ plugins {
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-   // targetHierarchy.default()
+    targetHierarchy.default()
 
     androidTarget {
         compilations.all {
@@ -26,7 +26,7 @@ kotlin {
             }
         }
     }
-    ios()
+    iosX64()
     //iosArm64()
     iosArm64 {
         binaries.executable()
@@ -144,6 +144,10 @@ kotlin {
                 implementation(libs.cash.sqldelight.native.driver)
             }
         }
+
+//        val iosX64 by getting {
+//            dependsOn(iosMain)
+//        }
 
         val iosArm64Main by getting{
             dependsOn(iosMain)

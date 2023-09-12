@@ -17,7 +17,7 @@
 package com.reverse.kmsunflower.viewmodels
 
 import com.reverse.kmsunflower.data.UnsplashRepository
-//import com.reverse.kmsunflower.helpers.cachedIn
+import com.reverse.kmsunflower.helpers.cachedIn
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 
 
@@ -26,5 +26,5 @@ class GalleryViewModel (
 ) : ViewModel() {
     fun plantPictures(queryString:String) =
         repository.getSearchResultStream(queryString )
-            //.cachedIn(viewModelScope)
+            .cachedIn(viewModelScope)
 }
