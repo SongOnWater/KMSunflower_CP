@@ -1,6 +1,6 @@
 # Sunflower migration to KMP/CMP 
 
-[Sunflow](https://github.com/android/sunflower) is a sample project of Google to demonstrate Jetpack Components and Compose. This project has migrated it to  Kotlin/Compose Multiplatform. The main work of migration is replace the Android Jetpack Components and libraries to corresponding multiplatform ones.
+[Sunflow](https://github.com/android/sunflower) is a sample project of Google to demonstrate Jetpack Components and Compose. This project has migrated it to  Kotlin/Compose Multiplatform. The main work of migration is replacing the Android Jetpack Components and libraries to corresponding multiplatform ones.
 Here is the main replacement mapping.
 |Android(A)|Multiplatform|
 | ------- | ------- |
